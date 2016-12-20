@@ -5,8 +5,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { resolveLocalDependencyPath } = require('../utils/paths.util')
 
 const makeWebpackConfig = (opts = {}) => {
-  const projectRoot = opts.root || process.cwd()
-  const resolveProjectPath = p => path.resolve(projectRoot, p)
+  const root = opts.root || process.cwd()
+  const resolveProjectPath = p => path.resolve(root, p)
 
   const NODE_ENV = opts.env || 'development'
   const __DEV__ = NODE_ENV === 'development'
