@@ -76,7 +76,7 @@ const createWebpackConfig = (opts) => {
         __TEST__,
         __PROD__,
         __TESTS_ROOT__: JSON.stringify(opts.tests_root),
-        __TESTS_PATTERN__: JSON.stringify(opts.tests_pattern),
+        __TESTS_PATTERN__: opts.tests_pattern,
       }),
     ],
   }
