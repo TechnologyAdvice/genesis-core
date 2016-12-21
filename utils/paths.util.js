@@ -1,6 +1,12 @@
 const path = require('path')
 
-const resolveLocalDependencyPath = (dependency) =>
-  path.resolve(__dirname, '../node_modules/' + dependency)
+// resolveLocalPath : String -> String
+const resolveLocalPath = target =>
+  path.resolve(__dirname, '../' + target)
 
+// resolveLocalDependencyPath : String -> String
+const resolveLocalDependencyPath = target =>
+  resolveLocalPath('node_modules/' + target)
+
+exports.resolveLocalPath = resolveLocalPath
 exports.resolveLocalDependencyPath = resolveLocalDependencyPath
