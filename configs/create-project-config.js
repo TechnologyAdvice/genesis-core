@@ -4,12 +4,12 @@ const { resolveLocalPath } = require('../utils/paths.util')
 const debug = require('debug')('genesis:core:create-project-config')
 
 // createProjectConfig : GenesisConfig -> GenesisConfig
-const createProjectConfig = (opts) => {
+const createProjectConfig = (opts = {}) => {
   debug('Creating configuration...')
 
   // Apply default values to undefined properties in user options
   const config = merge({
-    compiler_env          : process.env.NODE_ENV || 'development',
+    env                   : process.env.NODE_ENV || 'development',
     compiler_autoprefixer : ['last 2 versions'],
     compiler_vendors      : [],
     project_root          : process.cwd(),
