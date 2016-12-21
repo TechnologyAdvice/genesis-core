@@ -9,7 +9,7 @@ const debug = require('debug')('genesis:core:create-webpack-config')
 const createWebpackConfig = (opts) => {
   debug('Creating configuration...')
 
-  const NODE_ENV = opts.compiler_env
+  const NODE_ENV = opts.env
   debug(`Using "${NODE_ENV}" as the active environment.`)
 
   const resolveProjectPath = p => path.resolve(opts.project_root, p)
@@ -46,7 +46,7 @@ const createWebpackConfig = (opts) => {
         },
         // TODO(zuko): extract to file during static compilation
         {
-          test: /\.scss$/,
+          test: /\.(sass|scss)$/,
           include: map(resolveProjectPath, ['src']),
           use: concat(map(resolveLocalDependencyPath, ['style-loader', 'css-loader?sourceMap']),
                       [{
@@ -83,10 +83,10 @@ const createWebpackConfig = (opts) => {
 
   // modify webpack config to support HMR
   if (__DEV__) {
-    const publicPath = `${opts.server_protocol}://${opts.server_host}:${opts.server_port}/`
-    config.output.publicPath = publicPath
+    config.output.publicPath = `${opts.server_protocol}://${opts.server_host}:${opts.server_port}/`
     config.entry.app.push(
-      `webpack-hot-middleware/client?path=${publicPath}__webpack_hmr`
+      resolveLocalDependencyPath('webpack-hot-middleware/client') +
+      `?path=${config.output.publicPath}__webpack_hmr`
     )
     config.plugins.push(
       new webpack.HotModuleReplacementPlugin(),
