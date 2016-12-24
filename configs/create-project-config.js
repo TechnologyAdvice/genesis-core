@@ -10,22 +10,27 @@ const createProjectConfig = (opts = {}) => {
   // Apply default values to undefined properties in user options
   const config = merge({
     env                   : process.env.NODE_ENV || 'development',
+    root                  : process.cwd(),
     compiler_autoprefixer : ['last 2 versions'],
     compiler_vendors      : [],
-    project_root          : process.cwd(),
     server_host           : 'localhost',
     server_port           : 3000,
     server_protocol       : 'http',
     tests_pattern         : /\.(spec|test)\.js$/,
+    tests_preload         : [],
     tests_watch           : false,
     verbose               : false,
   }, opts)
+
+  // TODO: assert main exists
+  // TODO: default main?
+  config.main = Array.isArray(config.main) ? config.main : [config.main]
 
   // This is not currently able to be overriden
   config.tests_entry = resolveLocalPath('lib/test-runner-entry.js')
 
   // TODO: assert that tests directory exists
-  config.tests_root = opts.tests_root || path.resolve(config.project_root, 'test')
+  config.tests_root = opts.tests_root || path.resolve(config.root, 'test')
 
   // TODO: modify based on `config.verbose`
   config.compiler_stats = {

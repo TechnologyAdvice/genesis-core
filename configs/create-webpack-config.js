@@ -12,14 +12,14 @@ const createWebpackConfig = (opts) => {
   const NODE_ENV = opts.env
   debug(`Using "${NODE_ENV}" as the active environment.`)
 
-  const resolveProjectPath = p => path.resolve(opts.project_root, p)
+  const resolveProjectPath = p => path.resolve(opts.root, p)
   const __DEV__ = NODE_ENV === 'development'
   const __TEST__ = NODE_ENV === 'test'
   const __PROD__ = NODE_ENV === 'production'
 
   const config = {
     entry: {
-      app: [resolveProjectPath('src/main.js')],
+      main: opts.main,
     },
     devtool: 'source-map',
     output: {
@@ -31,8 +31,7 @@ const createWebpackConfig = (opts) => {
       rules: [
         {
           test: /\.js$/,
-          include: concat(map(resolveProjectPath, ['src', 'test']),
-                          map(resolveLocalPath, ['lib'])),
+          exclude: /node_modules/,
           use: [{
             loader: resolveLocalDependencyPath('babel-loader'),
             query: {
@@ -84,7 +83,7 @@ const createWebpackConfig = (opts) => {
   // modify webpack config to support HMR
   if (__DEV__) {
     config.output.publicPath = `${opts.server_protocol}://${opts.server_host}:${opts.server_port}/`
-    config.entry.app.push(
+    config.entry.main.push(
       resolveLocalDependencyPath('webpack-hot-middleware/client') +
       `?path=${config.output.publicPath}__webpack_hmr`
     )

@@ -1,8 +1,10 @@
-exports.createCompiler = (...args) =>
-  require('./lib/create-compiler')(...args)
+const resolveConfig = require('./configs/create-project-config')
 
-exports.createDevServer = (...args) =>
-  require('./lib/create-dev-server')(...args)
+exports.compile = (opts) =>
+  require('./lib/create-compiler')(resolveConfig(opts)).start()
 
-exports.createTestRunner = (...args) =>
-  require('./lib/create-test-runner')(...args)
+exports.dev = (opts) =>
+  require('./lib/create-dev-server')(resolveConfig(opts)).start()
+
+exports.test = (opts) =>
+  require('./lib/create-test-runner')(resolveConfig(opts)).start()
