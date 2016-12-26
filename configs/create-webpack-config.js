@@ -51,7 +51,7 @@ const createWebpackConfig = (opts) => {
                       [{
                         loader: resolveLocalDependencyPath('sass-loader?sourceMap'),
                         query: {
-                          includePaths: map(resolveLocalDependencyPath, ['src/styles']),
+                          includePaths: map(resolveProjectPath, ['src/styles']),
                         },
                       }]),
         },
