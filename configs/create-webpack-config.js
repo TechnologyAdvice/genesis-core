@@ -9,13 +9,13 @@ const debug = require('debug')('genesis:core:create-webpack-config')
 const createWebpackConfig = (opts) => {
   debug('Creating configuration...')
 
-  const NODE_ENV = opts.env
-  debug(`Using "${NODE_ENV}" as the active environment.`)
+  const { env } = opts
+  debug(`Using "${env}" as the node environment.`)
 
   const resolveProjectPath = p => path.resolve(opts.root, p)
-  const __DEV__ = NODE_ENV === 'development'
-  const __TEST__ = NODE_ENV === 'test'
-  const __PROD__ = NODE_ENV === 'production'
+  const __DEV__ = env === 'development'
+  const __TEST__ = env === 'test'
+  const __PROD__ = env === 'production'
 
   const config = {
     entry: {
