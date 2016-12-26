@@ -35,9 +35,9 @@ const createProjectConfig = (opts = {}) => {
   // Merge user globals with defaults
   config.compiler_globals = Object.assign({
     'process.env': { NODE_ENV: JSON.stringify(config.env) },
-    __DEV__,
-    __TEST__,
-    __PROD__,
+    __DEV__: config.env === 'development',
+    __TEST__: config.env === 'test',
+    __PROD__: config.env === 'production',
     __TESTS_ROOT__: JSON.stringify(opts.tests_root),
     __TESTS_PATTERN__: opts.tests_pattern,
   }, opts.compiler_globals)
