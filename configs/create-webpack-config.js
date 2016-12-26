@@ -69,14 +69,7 @@ const createWebpackConfig = (opts) => {
           collapseWhitespace: true,
         },
       }),
-      new webpack.DefinePlugin({
-        'process.env': { NODE_ENV: JSON.stringify(NODE_ENV) },
-        __DEV__,
-        __TEST__,
-        __PROD__,
-        __TESTS_ROOT__: JSON.stringify(opts.tests_root),
-        __TESTS_PATTERN__: opts.tests_pattern,
-      }),
+      new webpack.DefinePlugin(opts.compiler_globals),
     ],
   }
 

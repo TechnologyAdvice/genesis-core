@@ -32,6 +32,16 @@ const createProjectConfig = (opts = {}) => {
   // TODO: assert that tests directory exists
   config.tests_root = opts.tests_root || path.resolve(config.root, 'test')
 
+  // Merge user globals with defaults
+  config.compiler_globals = Object.assign({
+    'process.env': { NODE_ENV: JSON.stringify(config.env) },
+    __DEV__,
+    __TEST__,
+    __PROD__,
+    __TESTS_ROOT__: JSON.stringify(opts.tests_root),
+    __TESTS_PATTERN__: opts.tests_pattern,
+  }, opts.compiler_globals)
+
   // TODO: modify based on `config.verbose`
   config.compiler_stats = {
     assets       : true,   // assets info
