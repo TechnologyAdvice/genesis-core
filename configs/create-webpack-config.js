@@ -77,7 +77,7 @@ const createWebpackConfig = (opts) => {
   if (__DEV__) {
     config.output.publicPath = `${opts.server_protocol}://${opts.server_host}:${opts.server_port}/`
     config.entry.main.push(
-      resolveLocalDependencyPath('webpack-hot-middleware/client') +
+      resolveLocalDependencyPath('webpack-hot-middleware/client.js') +
       `?path=${config.output.publicPath}__webpack_hmr`
     )
     config.plugins.push(
