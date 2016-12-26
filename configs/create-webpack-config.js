@@ -1,4 +1,4 @@
-const { concat, isEmpty, map, merge, pipe, prepend } = require('redash')
+const { concat, isEmpty, map, pipe, prepend } = require('redash')
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')

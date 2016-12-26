@@ -38,8 +38,8 @@ const createProjectConfig = (opts = {}) => {
     __DEV__: config.env === 'development',
     __TEST__: config.env === 'test',
     __PROD__: config.env === 'production',
-    __TESTS_ROOT__: JSON.stringify(opts.tests_root),
-    __TESTS_PATTERN__: opts.tests_pattern,
+    __TESTS_ROOT__: JSON.stringify(config.tests_root),
+    __TESTS_PATTERN__: config.tests_pattern,
   }, opts.compiler_globals)
 
   // TODO: modify based on `config.verbose`

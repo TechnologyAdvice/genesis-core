@@ -21,11 +21,11 @@ const resolveLocalDependencyPath = target => {
   const [filepath, query = ''] = target.split('?')
   const localNodeModulePath = resolveLocalPath('node_modules/' + filepath)
   if (pathExists(localNodeModulePath)) {
-    return localNodeModulePath + query
+    return localNodeModulePath + (query ? `?${query}`: '')
   }
   const parentNodeModulePath = resolveLocalPath('../' + filepath)
   if (pathExists(parentNodeModulePath)) {
-    return parentNodeModulePath + query
+    return parentNodeModulePath + (query ? `?${query}`: '')
   }
   throw new Error(
     'Could not locate following dependency in the file system: ' +

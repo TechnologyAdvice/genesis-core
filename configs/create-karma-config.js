@@ -1,13 +1,15 @@
-const { concat, map, merge, pipe, prepend } = require('redash')
+const { assoc, concat, reduce } = require('redash')
 const path = require('path')
 const webpack = require('webpack')
 const { cleanStackTrace } = require('../utils/formatters.util')
+const { resolveLocalPath } = require('../utils/paths.util')
 const debug = require('debug')('genesis:core:create-karma-config')
 
 // createKarmaConfig : GenesisConfig -> KarmaConfig
 const createKarmaConfig = (opts) => {
   debug('Creating configuration...')
 
+  const webpackConfig = require('./create-webpack-config')(opts)
   const files = concat(opts.tests_preload || [], opts.tests_entry)
   const config = {
     basePath: opts.root,
@@ -22,12 +24,15 @@ const createKarmaConfig = (opts) => {
     frameworks: ['mocha'],
     reporters: ['mocha'],
     logLevel: 'WARN',
-    preprocessors: reduce((acc, file) => ({
-      ...acc,
-      [file]: ['webpack'],
-    }), {}, files),
+    preprocessors: reduce((acc, file) => assoc(file, ['webpack'], acc), {}, files),
     singleRun: !opts.tests_watch,
-    webpack: require('./create-webpack-config')(opts),
+    webpack: {
+      entry: files,
+      devtool: 'source-map',
+      module: webpackConfig.module,
+      plugins: webpackConfig.plugins,
+      resolve: webpackConfig.resolve,
+    },
     webpackMiddleware: {
       stats: opts.compiler_stats,
       noInfo: true,
