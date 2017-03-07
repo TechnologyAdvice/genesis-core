@@ -2,6 +2,7 @@ const { concat, isEmpty, length, map, pipe, prepend } = require('halcyon')
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const { resolveLocalPath, resolveLocalDependencyPath } = require('../utils/paths.util')
 const debug = require('../utils/debug.util')('genesis:core:create-webpack-config')
 
@@ -65,17 +66,26 @@ const createWebpackConfig = (opts) => {
 
   // Styles
   // ------------------------------------
+  const extractSass = new ExtractTextPlugin({
+    filename: '[name].css',
+    disable: __DEV__,
+  })
+
   config.module.rules.push({
     test: /\.(sass|scss)$/,
     include: opts.src,
-    use: concat(map(resolveLocalDependencyPath, ['style-loader', 'css-loader?sourceMap']),
-                [{
-                  loader: resolveLocalDependencyPath('sass-loader?sourceMap'),
-                  query: {
-                    includePaths: map(resolveProjectSrcPath, ['styles']),
-                  },
-                }]),
+    loader: extractSass.extract({
+      fallback: resolveLocalDependencyPath('style-loader'),
+      use: concat(map(resolveLocalDependencyPath, ['css-loader?sourceMap']),
+                      [{
+                        loader: resolveLocalDependencyPath('sass-loader?sourceMap'),
+                        query: {
+                          includePaths: map(resolveProjectSrcPath, ['styles']),
+                        },
+                      }]),
+    })
   })
+  config.plugins.push(extractSass)
 
   // Live Development
   // ------------------------------------

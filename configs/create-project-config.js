@@ -9,7 +9,7 @@ const createProjectConfig = (opts = {}) => {
 
   // Apply default values to options not supplied by the user.
   const config = merge({
-    env                   : process.env.NODE_ENV || 'development',
+    env                   : process.env.NODE_ENV,
     dir_root              : process.cwd(),
     app_title             : 'Genesis Application',
     app_template          : null,
@@ -24,6 +24,7 @@ const createProjectConfig = (opts = {}) => {
     verbose               : false,
   }, opts)
 
+  config.env = config.env || 'development'
   config.dir_src = config.dir_src || path.resolve(config.dir_root, 'src')
   config.dir_dist = config.dir_dist || path.resolve(config.dir_root, 'dist')
 
