@@ -3,7 +3,7 @@ const path = require('path')
 const webpack = require('webpack')
 const { cleanStackTrace } = require('../utils/formatters.util')
 const { resolveLocalPath } = require('../utils/paths.util')
-const debug = require('debug')('genesis:core:create-karma-config')
+const debug = require('../utils/debug.util')('genesis:core:create-karma-config')
 
 // createKarmaConfig : GenesisConfig -> KarmaConfig
 const createKarmaConfig = (opts) => {
@@ -12,7 +12,7 @@ const createKarmaConfig = (opts) => {
   const webpackConfig = require('./create-webpack-config')(opts)
   const files = concat(opts.tests_preload || [], opts.tests_entry)
   const config = {
-    basePath: opts.root,
+    basePath: opts.dir_root,
     browsers: ['PhantomJS'],
     coverageReporter: {
       reporters: [

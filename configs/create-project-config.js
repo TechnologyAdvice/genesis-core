@@ -1,16 +1,18 @@
 const { merge } = require('redash')
 const path = require('path')
 const { resolveLocalPath } = require('../utils/paths.util')
-const debug = require('debug')('genesis:core:create-project-config')
+const debug = require('../utils/debug.util')('genesis:core:create-project-config')
 
 // createProjectConfig : GenesisConfig -> GenesisConfig
 const createProjectConfig = (opts = {}) => {
   debug('Creating configuration...')
 
-  // Apply default values to undefined properties in user options
+  // Apply default values to options not supplied by the user.
   const config = merge({
     env                   : process.env.NODE_ENV || 'development',
-    root                  : process.cwd(),
+    dir_root              : process.cwd(),
+    app_title             : 'Genesis Application',
+    app_template          : null,
     compiler_autoprefixer : ['last 2 versions'],
     compiler_vendors      : [],
     server_host           : 'localhost',
@@ -22,24 +24,30 @@ const createProjectConfig = (opts = {}) => {
     verbose               : false,
   }, opts)
 
+  config.dir_src = config.dir_src || path.resolve(config.dir_root, 'src')
+  config.dir_dist = config.dir_dist || path.resolve(config.dir_root, 'dist')
+
   // TODO: assert main exists
-  // TODO: default main?
-  config.main = Array.isArray(config.main) ? config.main : [config.main]
+  config.main = config.main || [path.resolve(config.dir_src, 'main.js')]
 
   // This is not currently able to be overriden
   config.tests_entry = resolveLocalPath('lib/test-runner-entry.js')
 
   // TODO: assert that tests directory exists
-  config.tests_root = opts.tests_root || path.resolve(config.root, 'test')
+  config.tests_root = opts.tests_root || path.resolve(config.dir_root, 'test')
 
   // Merge user globals with defaults
   config.compiler_globals = Object.assign({
     'process.env': { NODE_ENV: JSON.stringify(config.env) },
     __DEV__: config.env === 'development',
+    __STAGING__: config.env === 'staging',
     __TEST__: config.env === 'test',
     __PROD__: config.env === 'production',
     __TESTS_ROOT__: JSON.stringify(config.tests_root),
     __TESTS_PATTERN__: config.tests_pattern,
+
+    // DEPRECATED
+    __STAG__: config.env === 'staging',
   }, opts.compiler_globals)
 
   // TODO: modify based on `config.verbose`

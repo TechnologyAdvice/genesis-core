@@ -1,9 +1,9 @@
-const { concat, isEmpty, map, pipe, prepend } = require('redash')
+const { concat, isEmpty, length, map, pipe, prepend } = require('redash')
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { resolveLocalPath, resolveLocalDependencyPath } = require('../utils/paths.util')
-const debug = require('debug')('genesis:core:create-webpack-config')
+const debug = require('../utils/debug.util')('genesis:core:create-webpack-config')
 
 // createWebpackConfig : GenesisConfig -> WebpackConfig
 const createWebpackConfig = (opts) => {
@@ -12,10 +12,8 @@ const createWebpackConfig = (opts) => {
   const { env } = opts
   debug(`Using "${env}" as the node environment.`)
 
-  const resolveProjectPath = p => path.resolve(opts.root, p)
-  const __DEV__ = env === 'development'
-  const __TEST__ = env === 'test'
-  const __PROD__ = env === 'production'
+  const { __DEV__, __TEST__, __PROD__ } = opts.compiler_globals
+  const resolveProjectSrcPath = p => path.resolve(opts.dir_src, p)
 
   const config = {
     entry: {
@@ -23,7 +21,7 @@ const createWebpackConfig = (opts) => {
     },
     devtool: 'source-map',
     output: {
-      path: resolveProjectPath('dist'),
+      path: opts.dir_dist,
       filename: '[name].js',
       publicPath: '/',
     },
@@ -43,39 +41,48 @@ const createWebpackConfig = (opts) => {
             },
           }],
         },
-        // TODO(zuko): extract to file during static compilation
-        {
-          test: /\.(sass|scss)$/,
-          include: map(resolveProjectPath, ['src']),
-          use: concat(map(resolveLocalDependencyPath, ['style-loader', 'css-loader?sourceMap']),
-                      [{
-                        loader: resolveLocalDependencyPath('sass-loader?sourceMap'),
-                        query: {
-                          includePaths: map(resolveProjectPath, ['src/styles']),
-                        },
-                      }]),
-        },
         {
           test: /\.(eot|gif|jpg|jpeg|png|svg|ttf|woff|woff2)$/,
           use: map(resolveLocalDependencyPath, ['file-loader']),
         },
       ],
     },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: resolveProjectPath('src/index.html'),
-        inject: true,
-        minify: {
-          collapseWhitespace: true,
-        },
-      }),
-      new webpack.DefinePlugin(opts.compiler_globals),
-    ],
+    plugins: [],
   }
 
+  const htmlWebpackPluginOpts = {
+    title: opts.app_title,
+    inject: true,
+    minify: {
+      collapseWhitespace: true,
+    },
+  }
+  if (opts.app_template) {
+    htmlWebpackPluginOpts.template = opts.app
+  }
+  config.plugins.push(new HtmlWebpackPlugin(htmlWebpackPluginOpts))
+  config.plugins.push(new webpack.DefinePlugin(opts.compiler_globals))
+
+  // Styles
+  // ------------------------------------
+  config.module.rules.push({
+    test: /\.(sass|scss)$/,
+    include: opts.src,
+    use: concat(map(resolveLocalDependencyPath, ['style-loader', 'css-loader?sourceMap']),
+                [{
+                  loader: resolveLocalDependencyPath('sass-loader?sourceMap'),
+                  query: {
+                    includePaths: map(resolveProjectSrcPath, ['styles']),
+                  },
+                }]),
+  })
+
+  // Live Development
+  // ------------------------------------
   // modify webpack config to support HMR
   if (__DEV__) {
     config.output.publicPath = `${opts.server_protocol}://${opts.server_host}:${opts.server_port}/`
+    config.entry.main = [].concat(config.entry.main) // ensure `main` is an array
     config.entry.main.push(
       resolveLocalDependencyPath('webpack-hot-middleware/client.js') +
       `?path=${config.output.publicPath}__webpack_hmr`
@@ -86,9 +93,11 @@ const createWebpackConfig = (opts) => {
     )
   }
 
-  // Only split bundles outside of development and testing
+  // Production Optimizations
+  // ------------------------------------
+  // Only split bundles outside of testing
   if (!__TEST__ && opts.compiler_vendors && !isEmpty(opts.compiler_vendors)) {
-    debug('Enable bundle splitting (CommonsChunkPlugin).')
+    debug(`Splitting ${length(opts.compiler_vendors)} vendor dependencies into separate vendor.js bundle.`)
     config.entry.vendor = opts.compiler_vendors
     config.plugins.push(
       new webpack.optimize.CommonsChunkPlugin({
@@ -97,7 +106,6 @@ const createWebpackConfig = (opts) => {
     )
   }
 
-  // Production-only optimizations
   if (__PROD__) {
     config.plugins.push(
       new webpack.LoaderOptionsPlugin({

@@ -3,12 +3,12 @@ const { chain, contains, join, pipe, prepend, reject, split, test, when } = requ
 // cleanStackTrace : String -> String
 const cleanStackTrace = (stackTrace) => {
   let hasSeenStack = false
-  return pipe(
+  return pipe([
     split('\n'),
     reject(test(/~/)), // exclude files from ~/node_modules
-    chain(pipe(
-      // prepend('  '), // indent all lines
-      when(contains('webpack:///'), (line) => {
+    chain(pipe([
+      prepend('  '), // indent all lines
+      when(contains('webpack:///'), line => {
         if (!hasSeenStack) {
           hasSeenStack = true
           const indent = line.slice(0, line.search(/\S/))
@@ -17,9 +17,9 @@ const cleanStackTrace = (stackTrace) => {
         line = line.replace('webpack:///', '')
         return line.slice(0, line.indexOf(' <- '))
       })
-    )),
+    ])),
     join('\n')
-  )(stackTrace)
+  ])(stackTrace)
 }
 
 exports.cleanStackTrace = cleanStackTrace
