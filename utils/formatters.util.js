@@ -1,4 +1,4 @@
-const { chain, contains, join, pipe, prepend, reject, split, test, when } = require('redash')
+const { contains, flatMap, join, pipe, prepend, reject, split, test, when } = require('halcyon')
 
 // cleanStackTrace : String -> String
 const cleanStackTrace = (stackTrace) => {
@@ -6,7 +6,7 @@ const cleanStackTrace = (stackTrace) => {
   return pipe([
     split('\n'),
     reject(test(/~/)), // exclude files from ~/node_modules
-    chain(pipe([
+    flatMap(pipe([
       prepend('  '), // indent all lines
       when(contains('webpack:///'), line => {
         if (!hasSeenStack) {

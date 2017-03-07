@@ -1,4 +1,4 @@
-const { concat, isEmpty, length, map, pipe, prepend } = require('redash')
+const { concat, isEmpty, length, map, pipe, prepend } = require('halcyon')
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -34,9 +34,9 @@ const createWebpackConfig = (opts) => {
             loader: resolveLocalDependencyPath('babel-loader'),
             query: {
               cacheDirectory: true,
-              plugins: map(pipe(prepend('babel-plugin-'), resolveLocalDependencyPath),
+              plugins: map(pipe([prepend('babel-plugin-'), resolveLocalDependencyPath]),
                            ['transform-runtime']),
-              presets: map(pipe(prepend('babel-preset-'), resolveLocalDependencyPath),
+              presets: map(pipe([prepend('babel-preset-'), resolveLocalDependencyPath]),
                            ['react', 'es2015', 'stage-1']),
             },
           }],

@@ -2191,6 +2191,10 @@ growl@1.9.2:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.9.2.tgz#0ea7743715db8d8de2c5ede1775e1b45ac85c02f"
 
+halcyon@^0.19.0:
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/halcyon/-/halcyon-0.19.0.tgz#c433616cbc92806d9697467e6043ffcacd2845e3"
+
 handlebars@^4.0.1:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.0.6.tgz#2ce4484850537f9c97a8026d5399b935c4ed4ed7"
@@ -3923,10 +3927,6 @@ readdirp@^2.0.0:
     minimatch "^3.0.2"
     readable-stream "^2.0.2"
     set-immediate-shim "^1.0.1"
-
-redash@^0.16.0:
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/redash/-/redash-0.16.0.tgz#941dacb39b4b620d6c8ec1ccca8a25afe67bc436"
 
 redent@^1.0.0:
   version "1.0.0"

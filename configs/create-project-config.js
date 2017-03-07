@@ -1,4 +1,4 @@
-const { merge } = require('redash')
+const { merge } = require('halcyon')
 const path = require('path')
 const { resolveLocalPath } = require('../utils/paths.util')
 const debug = require('../utils/debug.util')('genesis:core:create-project-config')

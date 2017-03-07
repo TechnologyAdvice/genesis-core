@@ -1,4 +1,4 @@
-const { assoc, concat, reduce } = require('redash')
+const { assoc, concat, reduce } = require('halcyon')
 const path = require('path')
 const webpack = require('webpack')
 const { cleanStackTrace } = require('../utils/formatters.util')
