@@ -38,16 +38,9 @@ ajv-keywords@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-1.2.0.tgz#676c4f087bfe1e8b12dca6fda2f3c74f417b099c"
 
-ajv@^4.11.2:
+ajv@^4.11.2, ajv@^4.7.0:
   version "4.11.4"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.11.4.tgz#ebf3a55d4b132ea60ff5847ae85d2ef069960b45"
-  dependencies:
-    co "^4.6.0"
-    json-stable-stringify "^1.0.1"
-
-ajv@^4.7.0:
-  version "4.10.0"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.10.0.tgz#7ae6169180eb199192a8b9a19fd0f47fc9ac8764"
   dependencies:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
@@ -2207,9 +2200,9 @@ growl@1.9.2:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.9.2.tgz#0ea7743715db8d8de2c5ede1775e1b45ac85c02f"
 
-halcyon@^0.19.0:
-  version "0.19.0"
-  resolved "https://registry.yarnpkg.com/halcyon/-/halcyon-0.19.0.tgz#c433616cbc92806d9697467e6043ffcacd2845e3"
+halcyon@^0.19.1:
+  version "0.19.1"
+  resolved "https://registry.yarnpkg.com/halcyon/-/halcyon-0.19.1.tgz#f3a68dec3c9dc8a27c3ade696e897e1b149f08a7"
 
 handlebars@^4.0.1:
   version "4.0.6"
