@@ -59,7 +59,7 @@ const createWebpackConfig = (opts) => {
     },
   }
   if (opts.app_template) {
-    htmlWebpackPluginOpts.template = opts.app
+    htmlWebpackPluginOpts.template = opts.app_template
   }
   config.plugins.push(new HtmlWebpackPlugin(htmlWebpackPluginOpts))
   config.plugins.push(new webpack.DefinePlugin(opts.compiler_globals))
