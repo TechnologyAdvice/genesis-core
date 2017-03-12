@@ -8,3 +8,6 @@ exports.dev = (opts) =>
 
 exports.test = (opts) =>
   require('./lib/create-test-runner')(resolveConfig(opts)).start()
+
+exports.register = (opts) =>
+  require('babel-register')(opts)
