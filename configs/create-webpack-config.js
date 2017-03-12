@@ -3,6 +3,7 @@ const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const createBabelConfig = require('./create-babel-config')
 const { resolveLocalPath, resolveLocalDependencyPath } = require('../utils/paths.util')
 const debug = require('../utils/debug.util')('genesis:core:create-webpack-config')
 
@@ -33,13 +34,7 @@ const createWebpackConfig = (opts) => {
           exclude: /node_modules/,
           use: [{
             loader: resolveLocalDependencyPath('babel-loader'),
-            query: {
-              cacheDirectory: true,
-              plugins: map(pipe([prepend('babel-plugin-'), resolveLocalDependencyPath]),
-                           ['transform-runtime']),
-              presets: map(pipe([prepend('babel-preset-'), resolveLocalDependencyPath]),
-                           ['react', 'es2015', 'stage-1']),
-            },
+            query: createBabelConfig({ cacheDirectory: true }),
           }],
         },
         {
