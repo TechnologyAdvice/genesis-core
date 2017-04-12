@@ -27,6 +27,9 @@ const createWebpackConfig = (opts) => {
       filename: '[name].js',
       publicPath: '/',
     },
+    resolve: {
+      extensions: ['.js', '.ts', '.tsx'],
+    },
     module: {
       rules: [
         {
@@ -35,6 +38,13 @@ const createWebpackConfig = (opts) => {
           use: [{
             loader: resolveLocalDependencyPath('babel-loader'),
             query: createBabelConfig({ cacheDirectory: true }),
+          }],
+        },
+        {
+          test: /\.(ts|tsx)$/,
+          exclude: /node_modules/,
+          use: [{
+            loader: resolveLocalDependencyPath('ts-loader'),
           }],
         },
         {

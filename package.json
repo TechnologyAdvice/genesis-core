@@ -47,6 +47,7 @@
     "phantomjs-prebuilt": "^2.1.14",
     "sass-loader": "^4.1.0",
     "style-loader": "^0.13.1",
+    "ts-loader": "^2.0.3",
     "webpack": "^2.2.0-rc.1",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.2"
