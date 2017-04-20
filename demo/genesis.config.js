@@ -1,4 +1,4 @@
 module.exports = {
-  env: process.env.NODE_ENV,
+  verbose: true,
   dir_root: __dirname,
 }
