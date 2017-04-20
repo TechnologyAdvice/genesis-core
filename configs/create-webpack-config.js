@@ -57,14 +57,14 @@ const createWebpackConfig = (opts) => {
   }
 
   const htmlWebpackPluginOpts = {
-    title: opts.app_title,
+    title: 'Genesis Application',
     inject: true,
     minify: {
       collapseWhitespace: true,
     },
   }
-  if (opts.app_template) {
-    htmlWebpackPluginOpts.template = opts.app_template
+  if (opts.compiler_template) {
+    htmlWebpackPluginOpts.template = opts.compiler_template
   }
   config.plugins.push(new HtmlWebpackPlugin(htmlWebpackPluginOpts))
   config.plugins.push(new webpack.DefinePlugin(opts.compiler_globals))

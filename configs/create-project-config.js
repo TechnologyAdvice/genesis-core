@@ -7,12 +7,11 @@ const debug = require('../utils/debug.util')('genesis:core:create-project-config
 const createProjectConfig = (opts = {}) => {
   debug('Creating configuration...')
 
-  // Apply default values to options not supplied by the user.
+  // Apply static defaults to options not supplied by the user.
   const config = merge({
     env                   : process.env.NODE_ENV,
     dir_root              : process.cwd(),
-    app_title             : 'Genesis Application',
-    app_template          : null,
+    compiler_template     : null,
     compiler_autoprefixer : ['last 2 versions'],
     compiler_vendors      : [],
     server_host           : 'localhost',
@@ -24,18 +23,14 @@ const createProjectConfig = (opts = {}) => {
     verbose               : false,
   }, opts)
 
+  // Dynamic configurations
   config.env = config.env || 'development'
   config.dir_src = config.dir_src || path.resolve(config.dir_root, 'src')
   config.dir_dist = config.dir_dist || path.resolve(config.dir_root, 'dist')
-
-  // TODO: assert main exists
   config.main = config.main || [path.resolve(config.dir_src, 'main')]
 
-  // This is not currently able to be overriden
-  config.tests_entry = resolveLocalPath('lib/test-runner-entry')
-
-  // TODO: assert that tests directory exists
   config.tests_root = opts.tests_root || path.resolve(config.dir_root, 'test')
+  config.tests_entry = resolveLocalPath('lib/test-runner-entry')
 
   // Merge user globals with defaults
   config.compiler_globals = Object.assign({
