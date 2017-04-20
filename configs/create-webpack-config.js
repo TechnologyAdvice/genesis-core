@@ -28,7 +28,7 @@ const createWebpackConfig = (opts) => {
       publicPath: '/',
     },
     resolve: {
-      extensions: ['.js', '.ts', '.tsx'],
+      extensions: ['.js', '.json', '.ts', '.tsx'],
     },
     module: {
       rules: [
