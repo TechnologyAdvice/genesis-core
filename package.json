@@ -1,5 +1,5 @@
 {
-  "name": "genesis-core",
+  "name": "@technologyadvice/genesis-core",
   "version": "0.1.0",
   "description": "Where it all begins",
   "main": "genesis-core.js",
@@ -10,6 +10,7 @@
     "genesis-core.js",
     "README.md",
     "configs",
+    "declarations",
     "lib",
     "utils"
   ],
