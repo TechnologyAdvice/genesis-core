@@ -23,10 +23,14 @@ const resolveLocalDependencyPath = target => {
   if (pathExists(localNodeModulePath)) {
     return localNodeModulePath + (query ? `?${query}`: '')
   }
-  const parentNodeModulePath = resolveLocalPath('../' + filepath)
-  if (pathExists(parentNodeModulePath)) {
-    return parentNodeModulePath + (query ? `?${query}`: '')
-  }
+  let currentPath = resolveLocalPath('..')
+  do {
+    const filePath = path.resolve(currentPath + '/' + filepath)
+    if (pathExists(filePath)) {
+      return filePath + (query ? `?${query}`: '')
+    }
+    currentPath = path.resolve(currentPath, '..')
+  } while (currentPath.split(path.sep).length > 2)
   throw new Error(
     'Could not locate following dependency in the file system: ' +
     target
