@@ -9,10 +9,16 @@ const createTestRunner = (opts) => {
 
   const config = createKarmaConfig(opts)
   function startTestRunner() {
+    debug('Starting test runner...')
     return new Promise((resolve, reject) => {
       const server = new karma.Server(config, code => {
-        if (code === 0) resolve(server)
-        else reject(code)
+        if (code !== 0) {
+          debug('Test runner initialization failed.')
+          reject(code)
+          return
+        }
+        debug('Test runner started successfully.')
+        resolve(server)
       })
 
       server.start()

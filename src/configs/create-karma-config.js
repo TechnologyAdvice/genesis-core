@@ -10,7 +10,7 @@ const createKarmaConfig = (opts) => {
   debug('Creating configuration...')
 
   const webpackConfig = require('./create-webpack-config')(opts)
-  const files = concat(opts.tests_preload || [], opts.tests_entry)
+  const files = [].concat(opts.tests_entry)
   const config = {
     basePath: opts.dir_root,
     browsers: ['PhantomJS'],
@@ -32,6 +32,11 @@ const createKarmaConfig = (opts) => {
       module: webpackConfig.module,
       plugins: webpackConfig.plugins,
       resolve: webpackConfig.resolve,
+      externals: Object.assign({}, webpackConfig.externals, {
+        'react/addons': true,
+        'react/lib/ReactContext': true,
+        'react/lib/ExecutionEnvironment': true,
+      })
     },
     webpackMiddleware: {
       stats: opts.compiler_stats,

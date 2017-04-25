@@ -6,7 +6,7 @@ const debug = require('../utils/debug.util')('genesis:core:create-dev-server')
 
 // createDevServer : GenesisConfig -> Server
 const createDevServer = (opts) => {
-  debug('Creating server...')
+  debug('Creating development server...')
 
   const app = express()
   app.use(require('connect-history-api-fallback')({ verbose: false }))

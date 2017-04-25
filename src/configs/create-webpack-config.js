@@ -22,6 +22,9 @@ const createWebpackConfig = (opts) => {
       main: opts.main,
     },
     devtool: 'source-map',
+    performance: {
+      hints: false,
+    },
     output: {
       path: opts.dir_dist,
       filename: '[name].js',
@@ -33,21 +36,6 @@ const createWebpackConfig = (opts) => {
     module: {
       rules: [
         {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          use: [{
-            loader: resolveLocalDependencyPath('babel-loader'),
-            query: createBabelConfig({ cacheDirectory: true }),
-          }],
-        },
-        {
-          test: /\.(ts|tsx)$/,
-          exclude: /node_modules/,
-          use: [{
-            loader: resolveLocalDependencyPath('ts-loader'),
-          }],
-        },
-        {
           test: /\.(eot|gif|jpg|jpeg|png|svg|ttf|woff|woff2)$/,
           use: map(resolveLocalDependencyPath, ['file-loader']),
         },
@@ -55,6 +43,46 @@ const createWebpackConfig = (opts) => {
     },
     plugins: [],
   }
+
+  if (opts.compiler_transpile) {
+    config.module.rules.push({
+      test: /\.js$/,
+      exclude: /node_modules/,
+      use: [{
+        loader: resolveLocalDependencyPath('babel-loader'),
+        query: createBabelConfig({ cacheDirectory: true }),
+      }],
+    })
+  }
+
+  const typescriptLoader = {
+    test: /\.(ts|tsx)$/,
+    exclude: /node_modules/,
+  }
+  if (opts.compiler_preact) {
+    typescriptLoader.use = [{
+      loader: resolveLocalDependencyPath('awesome-typescript-loader'),
+    }]
+
+    if (opts.compiler_transpile) {
+      typescriptLoader.use.unshift({
+        loader: resolveLocalDependencyPath('babel-loader'),
+        query: createBabelConfig({ cacheDirectory: true }),
+      })
+    }
+  } else {
+    typescriptLoader.use = [{
+      loader: resolveLocalDependencyPath('awesome-typescript-loader'),
+      query: opts.compiler_transpile ? {
+        useBabel: true,
+        useCache: __DEV__,
+        babelOptions: createBabelConfig(),
+      } : {
+        useCache: __DEV__,
+      },
+    }]
+  }
+  config.module.rules.push(typescriptLoader)
 
   const htmlWebpackPluginOpts = {
     title: 'Genesis Application',

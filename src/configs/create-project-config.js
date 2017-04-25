@@ -12,7 +12,9 @@ const createProjectConfig = (opts = {}) => {
     env                   : process.env.NODE_ENV,
     dir_root              : process.cwd(),
     compiler_template     : null,
+    compiler_transpile    : true,
     compiler_autoprefixer : ['last 2 versions'],
+    compiler_preact       : false,
     compiler_vendors      : [],
     server_host           : 'localhost',
     server_port           : 3000,
@@ -30,7 +32,7 @@ const createProjectConfig = (opts = {}) => {
   config.main = config.main || [path.resolve(config.dir_src, 'main')]
 
   config.tests_root = opts.tests_root || path.resolve(config.dir_root, 'test')
-  config.tests_entry = resolveLocalPath('lib/test-runner-entry')
+  config.tests_entry = resolveLocalPath('src/lib/test-runner-entry.js')
 
   // Merge user globals with defaults
   config.compiler_globals = Object.assign({
@@ -41,9 +43,6 @@ const createProjectConfig = (opts = {}) => {
     __PROD__: config.env === 'production',
     __TESTS_ROOT__: JSON.stringify(config.tests_root),
     __TESTS_PATTERN__: config.tests_pattern,
-
-    // DEPRECATED
-    __STAG__: config.env === 'staging',
   }, opts.compiler_globals)
 
   // TODO: modify based on `config.verbose`

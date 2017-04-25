@@ -13,7 +13,7 @@ const pathExists = target => {
 
 // resolveLocalPath : String -> String
 const resolveLocalPath = target =>
-  path.resolve(__dirname, '../' + target)
+  path.resolve(__dirname, '../../' + target)
 
 // resolveLocalDependencyPath : String -> String
 // TODO: this is too naive
