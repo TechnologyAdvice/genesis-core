@@ -1,8 +1,7 @@
-const fs = require('fs')
-const path = require('path')
+import * as fs from 'fs'
+import * as path from 'path'
 
-// pathExists : String -> Boolean
-const pathExists = target => {
+const pathExists = (target: string): boolean => {
   try {
     fs.accessSync(target)
     return true
@@ -11,13 +10,13 @@ const pathExists = target => {
   }
 }
 
-// resolveLocalPath : String -> String
-const resolveLocalPath = target =>
+// Finds a file from the genesis-core package
+export const resolveLocalPath = (target: string): string =>
   path.resolve(__dirname, '../../' + target)
 
-// resolveLocalDependencyPath : String -> String
+// Finds a dependency from the genesis-core package
 // TODO: this is too naive
-const resolveLocalDependencyPath = target => {
+export const resolveLocalDependencyPath = (target: string): string | never => {
   const [filepath, query = ''] = target.split('?')
   const localNodeModulePath = resolveLocalPath('node_modules/' + filepath)
   if (pathExists(localNodeModulePath)) {
@@ -36,6 +35,3 @@ const resolveLocalDependencyPath = target => {
     target
   )
 }
-
-exports.resolveLocalPath = resolveLocalPath
-exports.resolveLocalDependencyPath = resolveLocalDependencyPath

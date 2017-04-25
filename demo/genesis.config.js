@@ -1,4 +1,4 @@
 module.exports = {
   verbose: true,
-  dir_root: __dirname,
+  project_root: __dirname,
 }

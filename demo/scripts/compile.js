@@ -1,1 +1,1 @@
-require('../../genesis-core').compile(require('../genesis.config'))
+require('../../dist').compile(require('../genesis.config'))

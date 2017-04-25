@@ -1,51 +1,53 @@
-const { concat, isEmpty, length, map, pipe, prepend } = require('halcyon')
-const path = require('path')
-const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const createBabelConfig = require('./create-babel-config')
-const { resolveLocalPath, resolveLocalDependencyPath } = require('../utils/paths.util')
-const debug = require('../utils/debug.util')('genesis:core:create-webpack-config')
+import { GenesisCoreConfig } from '../types'
+import { concat, isEmpty, length, map } from 'halcyon'
+import * as path from 'path'
+import * as webpack from 'webpack'
+import * as HtmlWebpackPlugin from 'html-webpack-plugin'
+import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
+import createBabelConfig from './create-babel-config'
+import { resolveLocalDependencyPath } from '../utils/paths'
+import createDebugger from '../utils/create-debugger'
+const debug = createDebugger('configs:webpack')
 
-// createWebpackConfig : GenesisConfig -> WebpackConfig
-const createWebpackConfig = (opts) => {
+export default function createWebpackConfig (config: GenesisCoreConfig) {
   debug('Creating configuration...')
 
-  const { env } = opts
-  debug(`Using "${env}" as the node environment.`)
+  const { env } = config
+  debug(`Using "${env}" as process.env.NODE_ENV.`)
 
-  const { __DEV__, __TEST__, __PROD__ } = opts.compiler_globals
-  const resolveProjectSrcPath = p => path.resolve(opts.dir_src, p)
+  const { __DEV__, __TEST__, __PROD__ } = config.compiler_globals
+  const resolveProjectSrcPath = p => path.resolve(config.project_src, p)
 
-  const config = {
+  const webpackConfig = {
     entry: {
-      main: opts.main,
+      main: config.compiler_main,
     },
     devtool: 'source-map',
     performance: {
       hints: false,
     },
     output: {
-      path: opts.dir_dist,
+      path: config.project_dist,
       filename: '[name].js',
       publicPath: '/',
     },
     resolve: {
       extensions: ['.js', '.json', '.ts', '.tsx'],
     },
+    externals: {},
     module: {
       rules: [
         {
           test: /\.(eot|gif|jpg|jpeg|png|svg|ttf|woff|woff2)$/,
           use: map(resolveLocalDependencyPath, ['file-loader']),
         },
-      ],
+      ] as Array<Object>,
     },
-    plugins: [],
+    plugins: [] as Array<any>
   }
 
-  if (opts.compiler_transpile) {
-    config.module.rules.push({
+  if (config.compiler_transpile) {
+    webpackConfig.module.rules.push({
       test: /\.js$/,
       exclude: /node_modules/,
       use: [{
@@ -55,47 +57,32 @@ const createWebpackConfig = (opts) => {
     })
   }
 
-  const typescriptLoader = {
+  webpackConfig.module.rules.push({
     test: /\.(ts|tsx)$/,
     exclude: /node_modules/,
-  }
-  if (opts.compiler_preact) {
-    typescriptLoader.use = [{
+    use: [{
       loader: resolveLocalDependencyPath('awesome-typescript-loader'),
-    }]
-
-    if (opts.compiler_transpile) {
-      typescriptLoader.use.unshift({
-        loader: resolveLocalDependencyPath('babel-loader'),
-        query: createBabelConfig({ cacheDirectory: true }),
-      })
-    }
-  } else {
-    typescriptLoader.use = [{
-      loader: resolveLocalDependencyPath('awesome-typescript-loader'),
-      query: opts.compiler_transpile ? {
-        useBabel: true,
+      query: {
         useCache: __DEV__,
-        babelOptions: createBabelConfig(),
-      } : {
-        useCache: __DEV__,
+        useBabel: config.compiler_transpile,
+        babelOptions: config.compiler_transpile && createBabelConfig(),
+        configFileName: path.resolve(config.project_root, 'tsconfig.json'),
       },
-    }]
-  }
-  config.module.rules.push(typescriptLoader)
+    }],
+  })
 
-  const htmlWebpackPluginOpts = {
+  const htmlWebpackPluginOpts: any = {
     title: 'Genesis Application',
     inject: true,
     minify: {
       collapseWhitespace: true,
     },
   }
-  if (opts.compiler_template) {
-    htmlWebpackPluginOpts.template = opts.compiler_template
+  if (config.compiler_template) {
+    htmlWebpackPluginOpts.template = config.compiler_template
   }
-  config.plugins.push(new HtmlWebpackPlugin(htmlWebpackPluginOpts))
-  config.plugins.push(new webpack.DefinePlugin(opts.compiler_globals))
+  webpackConfig.plugins.push(new HtmlWebpackPlugin(htmlWebpackPluginOpts))
+  webpackConfig.plugins.push(new webpack.DefinePlugin(config.compiler_globals))
 
   // Styles
   // ------------------------------------
@@ -104,9 +91,9 @@ const createWebpackConfig = (opts) => {
     disable: __DEV__,
   })
 
-  config.module.rules.push({
+  webpackConfig.module.rules.push({
     test: /\.(sass|scss)$/,
-    include: opts.src,
+    include: config.project_src,
     loader: extractSass.extract({
       fallback: resolveLocalDependencyPath('style-loader'),
       use: concat(map(resolveLocalDependencyPath, ['css-loader?sourceMap']),
@@ -118,19 +105,19 @@ const createWebpackConfig = (opts) => {
                       }]),
     })
   })
-  config.plugins.push(extractSass)
+  webpackConfig.plugins.push(extractSass)
 
   // Live Development
   // ------------------------------------
   // modify webpack config to support HMR
   if (__DEV__) {
-    config.output.publicPath = `${opts.server_protocol}://${opts.server_host}:${opts.server_port}/`
-    config.entry.main = [].concat(config.entry.main) // ensure `main` is an array
-    config.entry.main.push(
+    webpackConfig.output.publicPath = `${config.server_protocol}://${config.server_host}:${config.server_port}/`
+    webpackConfig.entry.main = [].concat(webpackConfig.entry.main as any) // ensure `main` is an array
+    webpackConfig.entry.main.push(
       resolveLocalDependencyPath('webpack-hot-middleware/client.js') +
-      `?path=${config.output.publicPath}__webpack_hmr`
+      `?path=${webpackConfig.output.publicPath}__webpack_hmr`
     )
-    config.plugins.push(
+    webpackConfig.plugins.push(
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NamedModulesPlugin()
     )
@@ -139,10 +126,10 @@ const createWebpackConfig = (opts) => {
   // Production Optimizations
   // ------------------------------------
   // Only split bundles outside of testing
-  if (!__TEST__ && opts.compiler_vendors && !isEmpty(opts.compiler_vendors)) {
-    debug(`Splitting ${length(opts.compiler_vendors)} vendor dependencies into separate vendor.js bundle.`)
-    config.entry.vendor = opts.compiler_vendors
-    config.plugins.push(
+  if (!__TEST__ && config.compiler_vendors && !isEmpty(config.compiler_vendors)) {
+    debug(`Splitting ${length(config.compiler_vendors)} vendor dependencies into separate vendor.js bundle.`)
+    webpackConfig.entry['vendor'] = config.compiler_vendors
+    webpackConfig.plugins.push(
       new webpack.optimize.CommonsChunkPlugin({
         names: ['vendor'],
       })
@@ -150,7 +137,7 @@ const createWebpackConfig = (opts) => {
   }
 
   if (__PROD__) {
-    config.plugins.push(
+    webpackConfig.plugins.push(
       new webpack.LoaderOptionsPlugin({
         minimize: true,
         debug: false,
@@ -174,7 +161,5 @@ const createWebpackConfig = (opts) => {
       })
     )
   }
-  return config
+  return webpackConfig
 }
-
-module.exports = createWebpackConfig

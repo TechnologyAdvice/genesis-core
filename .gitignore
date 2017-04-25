@@ -1,5 +1,6 @@
 *.iml
 *.log*
+.awcache
 
 .DS_Store
 .idea/
