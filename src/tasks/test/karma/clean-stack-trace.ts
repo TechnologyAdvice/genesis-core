@@ -1,7 +1,6 @@
-const { contains, flatMap, join, pipe, prepend, reject, split, test, when } = require('halcyon')
+import { contains, flatMap, join, pipe, prepend, reject, split, test, when } from 'halcyon'
 
-// cleanStackTrace : String -> String
-const cleanStackTrace = (stackTrace) => {
+export default function cleanStackTrace (stackTrace: string): string {
   let hasSeenStack = false
   return pipe([
     split('\n'),
@@ -21,5 +20,3 @@ const cleanStackTrace = (stackTrace) => {
     join('\n')
   ])(stackTrace)
 }
-
-exports.cleanStackTrace = cleanStackTrace

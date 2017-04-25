@@ -1,19 +1,24 @@
 {
   "compilerOptions": {
-    "allowJs": false,
     "lib": [
-      "dom",
       "es2015"
     ],
-    "jsx": "react",
-    "target": "es2015",
+    "declaration": true,
     "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es2015",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "removeComments": false,
     "preserveConstEnums": false,
-    "sourceMap": true,
-    "pretty": true
+    "sourceMap": false,
+    "strictNullChecks": true,
+    "rootDir": "./src",
+    "outDir": "dist",
+    "pretty": true,
+    "types": [
+      "node"
+    ]
   },
   "include": [
     "./src"
