@@ -1,10 +1,12 @@
 import { GenesisCoreConfig, GenesisTask } from '../../types'
-import karma from 'karma'
+import * as karma from 'karma'
 import createDebugger from '../../utils/create-debugger'
 import createKarmaConfig from './karma/create-config'
 const debug = createDebugger('tasks:test')
 
-export type TestTask = GenesisTask
+export type TestTask = GenesisTask & {
+  start: () => Promise<Object>,
+}
 export default function test (config: GenesisCoreConfig): TestTask {
   debug('Initializing...')
 

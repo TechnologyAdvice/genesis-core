@@ -2,15 +2,31 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import './styles/main.scss'
 
-class App extends React.Component<undefined, undefined> {
-  render () {
-    return (
-      <h1>Welcome to Genesis Core</h1>
-    )
-  }
+const MOUNT_NODE = document.createElement('div')
+document.body.appendChild(MOUNT_NODE)
+
+let render = () => {
+  const App = require('./components/App').default
+  ReactDOM.render(<App />, MOUNT_NODE)
 }
 
-const root = document.createElement('div')
-document.body.appendChild(root)
+if (__DEV__) {
+  if (module['hot']) {
+    const renderApp = render
+    render = () => {
+      try {
+        renderApp()
+      } catch (e) {
+        console.error(e)
+      }
+    }
 
-ReactDOM.render(<App />, root)
+    module['hot'].accept('./components/App', () => {
+      setImmediate(() => {
+        ReactDOM.unmountComponentAtNode(MOUNT_NODE)
+        render()
+      })
+    })
+  }
+}
+render()

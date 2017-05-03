@@ -1,1 +1,1 @@
-require('../../dist').develop(require('../genesis.config'))
+require('../genesis.config').default.dev()
