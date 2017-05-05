@@ -1,1 +1,1 @@
-require('../genesis.config').default.dev()
+require('../genesis.config').default.run()

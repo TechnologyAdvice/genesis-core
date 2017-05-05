@@ -20,14 +20,14 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         inProjectSrc(opts.main),
       ],
     },
-    devtool: opts.env === 'development' ? 'source-map' : 'source-map',
+    devtool: opts.sourcemaps ? 'source-map' : false,
     performance: {
       hints: false,
     },
     output: {
       path: inProject(opts.outDir),
       filename: __DEV__ ? '[name].js' : '[name].[chunkhash].js',
-      publicPath: '/',
+      publicPath: opts.publicPath,
     },
     resolve: {
       extensions: ['*', '.js', '.json', '.ts', '.tsx'],
@@ -43,7 +43,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     },
     plugins: [
       new webpack.DefinePlugin(Object.assign({
-        'process.env' : { NODE_ENV: JSON.stringify(opts.env) },
+        'process.env': { NODE_ENV: JSON.stringify(opts.env) },
         __DEV__,
         __STAGING__,
         __TEST__,
@@ -66,12 +66,17 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         ],
         presets: [
           findGenesisDependency('babel-preset-react'),
-          findGenesisDependency('babel-preset-es2015'),
-          findGenesisDependency('babel-preset-stage-1'),
+          [findGenesisDependency('babel-preset-env'), {
+            targets: {
+              browsers: ['last 2 versions'],
+              uglify: true,
+            },
+          }],
         ]
       },
     }],
   })
+
 
   config.module.rules.push({
     test: /\.(ts|tsx)$/,
@@ -81,6 +86,19 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       query: {
         useCache: true,
         configFileName: opts.typescript.configPath,
+        // UglifyJS does not yet support all ES6 features, so when minification
+        // is enabled we need to process the TypeScript output with Babel to ensure
+        // it can be understood by UglifyJS.
+        useBabel: opts.minify,
+        babelOptions: {
+          presets: [
+            [findGenesisDependency('babel-preset-env'), {
+              targets: {
+                uglify: true,
+              },
+            }],
+          ],
+        },
       },
     }],
   })
@@ -142,7 +160,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         debug: false,
       }),
       new webpack.optimize.UglifyJsPlugin({
-        sourceMap: true,
+        sourceMap: !!config.devtool,
         compress: {
           warnings: false,
           screw_ie8: true,

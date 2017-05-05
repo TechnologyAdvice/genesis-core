@@ -3,7 +3,7 @@ const GenesisCore = require('../dist').default
 
 exports.default = GenesisCore({
   basePath: __dirname,
-  verbose: true,
+  sourcemaps: false,
   typescript: {
     configPath: path.resolve(__dirname, 'tsconfig.json'),
   },

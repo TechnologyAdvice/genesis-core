@@ -48,13 +48,13 @@ export interface DevServerOpts {
 class DevServer {
   _server: any
 
-  constructor (config: ICompilerConfig, options: Partial<DevServerOpts>) {
+  constructor (config: ICompilerConfig, overrides?: Partial<DevServerOpts>) {
     const opts = Object.assign({
       protocol: 'http',
       host: 'localhost',
       port: 3000,
       contentBase: path.resolve(config.basePath, config.srcDir),
-    }, options)
+    }, overrides)
 
     this._server = express()
     this._server.use(require('connect-history-api-fallback')())

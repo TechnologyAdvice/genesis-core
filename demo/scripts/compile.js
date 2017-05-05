@@ -1,4 +1,4 @@
-require('../../dist').compile(require('../genesis.config'))
+require('../genesis.config').default.compile()
   .then(stats => {
     console.log(stats.toString({
       colors: true,

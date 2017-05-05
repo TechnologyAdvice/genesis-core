@@ -1,1 +1,1 @@
-require('../../genesis-core').test(require('../genesis.config'))
+require('../genesis.config').default.test({ watch: true })
