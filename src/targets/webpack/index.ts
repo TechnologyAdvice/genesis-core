@@ -25,11 +25,9 @@ class WebpackCompiler extends Compiler {
   }
 
   test (opts?: Partial<{ watch: boolean }>) {
-    // TODO(zuko): better way? Does this env even matter?
-    this.config.env = 'test'
-
     return new Promise((resolve, reject) => {
-      const webpackConfig = createWebpackConfig(this.config)
+      const config = Object.assign({}, this.config, { env: 'test' })
+      const webpackConfig = createWebpackConfig(config)
       const karmaConfig = createKarmaConfig(webpackConfig, {
         basePath: this.config.basePath,
         enzyme: true,

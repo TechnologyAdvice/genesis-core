@@ -1,5 +1,6 @@
 import { ICompiler, ICompilerConfig } from './lib/compiler'
 import WebpackCompiler from './targets/webpack'
+import * as logger from './utils/logger'
 
 const COMPILER_DEFAULTS: ICompilerConfig = {
   env          : process.env.NODE_ENV,
@@ -21,15 +22,14 @@ const COMPILER_DEFAULTS: ICompilerConfig = {
 }
 
 export default (opts: Partial<ICompilerConfig>): ICompiler => {
+  // TODO(zuko): need to support deep merging
   const config: ICompilerConfig = Object.assign({}, COMPILER_DEFAULTS, opts)
 
   if (!config.env) {
     config.env = 'development'
-    console.warn(
-      '\n!!! [ WARNING ] !!!\n' +
-      'No environment detected; using "development" as the default environment.\n' +
-      'Set process.env.NODE_ENV or the "env" property in your genesis configuration.' +
-      '\n'
+    logger.warn(
+      'No environment detected; using "development" as the default environment.\n  ' +
+      'Set process.env.NODE_ENV or the "env" property in your genesis configuration.'
     )
   }
   // TODO(zuko): figure out the best place for this. Bigger question is how to best

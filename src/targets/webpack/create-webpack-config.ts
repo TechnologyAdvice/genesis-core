@@ -90,6 +90,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         // is enabled we need to process the TypeScript output with Babel to ensure
         // it can be understood by UglifyJS.
         useBabel: opts.minify,
+        silent: true,
         babelOptions: {
           presets: [
             [findGenesisDependency('babel-preset-env'), {
