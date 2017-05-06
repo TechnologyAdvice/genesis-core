@@ -6,8 +6,8 @@ import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { findGenesisDependency } from '../../utils/paths'
 
 export default function createWebpackConfig (opts: ICompilerConfig) {
-  const inProject = (...paths) => path.resolve(opts.basePath, ...paths)
-  const inProjectSrc = file => inProject(opts.srcDir, file)
+  const inProject = (...paths: Array<string>) => path.resolve(opts.basePath, ...paths)
+  const inProjectSrc = (file: string) => inProject(opts.srcDir, file)
 
   const __DEV__     = opts.env === 'development'
   const __STAGING__ = opts.env === 'staging'
@@ -19,7 +19,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       main: [
         inProjectSrc(opts.main),
       ],
-    },
+    } as any,
     devtool: opts.sourcemaps ? 'source-map' : false,
     performance: {
       hints: false,
@@ -136,12 +136,10 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   const htmlWebpackPluginOpts = {
     title: 'Genesis Application',
     inject: true,
+    template: opts.templatePath || undefined,
     minify: {
       collapseWhitespace: true,
     },
-  }
-  if (opts.templatePath) {
-    htmlWebpackPluginOpts['template'] = opts.templatePath
   }
   config.plugins.push(new HtmlWebpackPlugin(htmlWebpackPluginOpts))
 
@@ -150,7 +148,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
 
     if (opts.vendors && opts.vendors.length) {
       bundles.unshift('vendor')
-      config.entry['vendor'] = opts.vendors
+      config.entry.vendor = opts.vendors
     }
     config.plugins.push(new webpack.optimize.CommonsChunkPlugin({ names: bundles }))
   }
@@ -162,6 +160,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       }),
       new webpack.optimize.UglifyJsPlugin({
         sourceMap: !!config.devtool,
+        comments: false,
         compress: {
           warnings: false,
           screw_ie8: true,
@@ -173,9 +172,6 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
           evaluate: true,
           if_return: true,
           join_vars: true,
-        },
-        output: {
-          comments: false,
         },
       })
     )

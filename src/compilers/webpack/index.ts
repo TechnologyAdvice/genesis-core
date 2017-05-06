@@ -9,7 +9,7 @@ class WebpackCompiler extends Compiler {
   compile () {
     return Promise.resolve()
       .then(() => {
-        const compiler = webpack(createWebpackConfig(this.config))
+        const compiler = webpack(createWebpackConfig(this.config) as any)
         return new Promise((resolve, reject) => {
           compiler.run((err, stats) => {
             if (err) reject(err)

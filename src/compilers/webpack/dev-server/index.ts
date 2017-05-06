@@ -12,7 +12,7 @@ import * as logger from '../../../utils/logger'
 const onCompilerRestart = () => {
   logger.info('Change detected, starting compiler...')
 }
-const onCompilerDone = (stats) => {
+const onCompilerDone = (stats: any) => {
   const hasErrors = stats.hasErrors()
   const hasWarnings = stats.hasWarnings()
 
@@ -36,7 +36,7 @@ export type CreateDevMiddlewareOpts = {
   contentBase: string,
   onCompile: (stats: any) => any,
 }
-export const createDevMiddleware = (webpackConfig, opts: CreateDevMiddlewareOpts): Array<Middleware> => {
+export const createDevMiddleware = (webpackConfig: any, opts: CreateDevMiddlewareOpts): Array<Middleware> => {
   webpackConfig.output.publicPath = `${opts.protocol}://${opts.host}:${opts.port}/`
     webpackConfig.entry.main.push(
       findGenesisDependency('webpack-hot-middleware/client.js') +
@@ -49,17 +49,13 @@ export const createDevMiddleware = (webpackConfig, opts: CreateDevMiddlewareOpts
 
   const webpackCompiler = webpack(webpackConfig)
   const devMiddleware = webpackDevMiddleware(webpackCompiler, {
-    contentBase: opts.contentBase,
-    hot: true,
     lazy: false,
     noInfo: true,
-    progress: false,
-    timings: false,
     publicPath: webpackConfig.output.publicPath,
     stats: 'none',
   })
   const hotMiddleware = webpackHotMiddleware(webpackCompiler, {
-    log: null,
+    log: undefined,
   })
 
   const middleware = [devMiddleware, hotMiddleware]

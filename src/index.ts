@@ -1,5 +1,5 @@
 import { ICompiler, ICompilerConfig } from './lib/compiler'
-import WebpackCompiler from './targets/webpack'
+import WebpackCompiler from './compilers/webpack'
 import * as logger from './utils/logger'
 
 const COMPILER_DEFAULTS: ICompilerConfig = {

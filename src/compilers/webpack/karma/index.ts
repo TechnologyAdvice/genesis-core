@@ -1,4 +1,3 @@
-import { assoc, reduce } from 'halcyon'
 import * as path from 'path'
 import * as webpack from 'webpack'
 import { resolveLocalPath } from '../../../utils/paths'
@@ -8,7 +7,7 @@ export interface KarmaOptions {
   enzyme?: boolean,
   watch?: boolean,
 }
-export default function createKarmaConfig (webpackConfig, opts: KarmaOptions) {
+export default function createKarmaConfig (webpackConfig: any, opts: KarmaOptions) {
   const files: Array<string> = []
   files.push(resolveLocalPath('src/targets/webpack/karma/plugins/mocha.js'))
   if (opts.enzyme) files.push(resolveLocalPath('src/targets/webpack/karma/plugins/enzyme.js'))
@@ -27,7 +26,10 @@ export default function createKarmaConfig (webpackConfig, opts: KarmaOptions) {
     frameworks: ['mocha'],
     reporters: ['mocha'],
     logLevel: 'WARN',
-    preprocessors: reduce((acc, file) => assoc(file, ['webpack'], acc), {}, files),
+    preprocessors: files.reduce((acc, file) => ({
+      ...acc,
+      [file]: ['webpack'],
+    }), {}),
     singleRun: !opts.watch,
     browserConsoleLogOptions: {
       terminal: true,

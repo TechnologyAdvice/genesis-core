@@ -36,9 +36,9 @@ export interface ICompilerConfig {
 export interface ICompiler {
   config: ICompilerConfig
 
-  compile (opts?): Promise<any>
-  run (opts?): Promise<any>
-  test (opts?): Promise<any>
+  compile (opts?: any): Promise<any>
+  run (opts?: any): Promise<any>
+  test (opts?: any): Promise<any>
 }
 
 abstract class Compiler implements ICompiler {
@@ -48,9 +48,9 @@ abstract class Compiler implements ICompiler {
     this.config = config
   }
 
-  abstract compile (opts?): Promise<any>
-  abstract run (opts?): Promise<any>
-  abstract test (opts?): Promise<any>
+  abstract compile (opts?: any): Promise<any>
+  abstract run (opts?: any): Promise<any>
+  abstract test (opts?: any): Promise<any>
 }
 
 export default Compiler

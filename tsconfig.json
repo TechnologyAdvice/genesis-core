@@ -8,12 +8,12 @@
     "moduleResolution": "node",
     "module": "commonjs",
     "target": "es2015",
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "removeComments": false,
     "preserveConstEnums": false,
     "sourceMap": false,
-    "strictNullChecks": true,
     "rootDir": "./src",
     "outDir": "dist",
     "pretty": true,
@@ -22,7 +22,8 @@
     ]
   },
   "include": [
-    "./src"
+    "./src",
+    "./declarations"
   ],
   "exclude": [
     "./src/tasks"
