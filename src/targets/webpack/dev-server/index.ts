@@ -1,13 +1,13 @@
-import { ICompilerConfig } from '../../lib/compiler'
+import { ICompilerConfig } from '../../../lib/compiler'
 import * as path from 'path'
 import * as express from 'express'
 import * as webpack from 'webpack'
 import * as chalk from 'chalk'
 import * as webpackDevMiddleware from 'webpack-dev-middleware'
 import * as webpackHotMiddleware from 'webpack-hot-middleware'
-import createWebpackConfig from './create-webpack-config'
-import { findGenesisDependency } from '../../utils/paths'
-import * as logger from '../../utils/logger'
+import createWebpackConfig from '../create-webpack-config'
+import { findGenesisDependency } from '../../../utils/paths'
+import * as logger from '../../../utils/logger'
 
 const onCompilerRestart = () => {
   logger.info('Change detected, starting compiler...')
