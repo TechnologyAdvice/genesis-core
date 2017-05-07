@@ -2,6 +2,7 @@ import * as figures from 'figures'
 import * as chalk from 'chalk'
 
 // HACK: disable annoying loaderUtils warning
+// TODO(zuko): remove this when fixed
 ;(() => {
   const reportError = console.error.bind(console)
   const ignore = /https\:\/\/github\.com\/webpack\/loader-utils\/issues\/56/

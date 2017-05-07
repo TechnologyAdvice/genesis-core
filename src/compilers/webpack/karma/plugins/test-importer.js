@@ -2,7 +2,8 @@
 // Using a regular JS variable is not statically analyzable so webpack will throw warnings.
 const testsContext = require.context(__TESTS_ROOT__, true, __TESTS_PATTERN__)
 
-// Only re-run tests that changed, or all if none did.
+// When a test file changes, only rerun that spec file. If something outside of a
+// test file changed, rerun all tests.
 // https://www.npmjs.com/package/karma-webpack-with-fast-source-maps
 const __karmaWebpackManifest__ = []
 const allTests = testsContext.keys()

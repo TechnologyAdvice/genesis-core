@@ -1,4 +1,8 @@
-export type Environment = 'development' | 'staging' | 'test' | 'production'
+export type Environment =
+  'development'
+| 'staging'
+| 'test'
+| 'production'
 
 export interface ICompilerConfig {
   /** The environment to use when compiling the project */
@@ -16,9 +20,12 @@ export interface ICompilerConfig {
   /** The base path for all projects assets (relative to the root) */
   publicPath   : string,
   /** A hash map of keys that the compiler should treat as external to the project */
-  externals    : Object,
+  externals    : {
+    [key: string] : string,
+  },
   /** A hash map of variables and their values to expose globally */
   globals      : Object,
+  // TODO(zuko): figure out a better name
   /** The list of modules to compile separately from the core project code */
   vendors      : Array<string>,
   /** Whether to run the compiler with verbose logging */
@@ -33,24 +40,9 @@ export interface ICompilerConfig {
     configPath : string | null,
   }
 }
-export interface ICompiler {
-  config: ICompilerConfig
 
+export interface ICompiler {
   compile (opts?: any): Promise<any>
   run (opts?: any): Promise<any>
   test (opts?: any): Promise<any>
 }
-
-abstract class Compiler implements ICompiler {
-  public config: ICompilerConfig
-
-  constructor (config: ICompilerConfig) {
-    this.config = config
-  }
-
-  abstract compile (opts?: any): Promise<any>
-  abstract run (opts?: any): Promise<any>
-  abstract test (opts?: any): Promise<any>
-}
-
-export default Compiler

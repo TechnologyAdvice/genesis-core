@@ -3,7 +3,7 @@
   <p>Simplified build tooling for a complicated world</p>
 </div>
 
-A simplified interface over advanced build tooling that allows you to take advantage of the modern JavaScript ecosystem without any of the headache. The interface, configuration, and usage of genesis-core remains the same no matter what type of project you are developing, including Single Page Applications and distributable NPM libraries.
+A simplified interface over advanced build tooling that allows you to take advantage of the modern JavaScript ecosystem without any of the headache. The interface, configuration, and usage of genesis-core remains the same no matter what type of project you are developing, such as Single Page Applications and distributable NPM libraries.
 
 ## Table of Contents
 1. [Features](#features)

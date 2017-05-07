@@ -4,13 +4,13 @@ import { resolveLocalPath } from '../../../utils/paths'
 
 export interface KarmaOptions {
   basePath: string,
-  enzyme?: boolean,
+  react?: boolean,
   watch?: boolean,
 }
 export default function createKarmaConfig (webpackConfig: any, opts: KarmaOptions) {
   const files: Array<string> = []
   files.push(resolveLocalPath('src/targets/webpack/karma/plugins/mocha.js'))
-  if (opts.enzyme) files.push(resolveLocalPath('src/targets/webpack/karma/plugins/enzyme.js'))
+  if (opts.react) files.push(resolveLocalPath('src/targets/webpack/karma/plugins/enzyme.js'))
   files.push(resolveLocalPath('src/targets/webpack/karma/plugins/dirty-chai.js'))
   files.push(resolveLocalPath('src/targets/webpack/karma/plugins/test-importer.js'))
 
@@ -47,16 +47,20 @@ export default function createKarmaConfig (webpackConfig: any, opts: KarmaOption
         })
       ]),
       resolve: webpackConfig.resolve,
-      externals: Object.assign({}, webpackConfig.externals, {
-        'react/addons': true,
-        'react/lib/ReactContext': true,
-        'react/lib/ExecutionEnvironment': true,
-      })
+      externals: webpackConfig.externals,
     },
     webpackMiddleware: {
       stats: 'errors-only',
       noInfo: true,
     },
+  }
+  if (opts.react) {
+    karmaConfig.webpack.externals = {
+      ...karmaConfig.webpack.externals,
+      'react/addons': true,
+      'react/lib/ReactContext': true,
+      'react/lib/ExecutionEnvironment': true,
+    }
   }
 
   return karmaConfig
