@@ -1,5 +1,5 @@
 import { ICompiler, ICompilerConfig } from './lib/compiler'
-import WebpackCompiler from './compilers/webpack'
+import WebAppCompiler from './compilers/web-app'
 import * as logger from './utils/logger'
 
 const COMPILER_DEFAULTS: ICompilerConfig = {
@@ -38,5 +38,5 @@ export default (opts: Partial<ICompilerConfig>): ICompiler => {
     config.minify = true
   }
 
-  return new WebpackCompiler(config)
+  return new WebAppCompiler(config)
 }

@@ -9,10 +9,10 @@ export interface KarmaOptions {
 }
 export default function createKarmaConfig (webpackConfig: any, opts: KarmaOptions) {
   const files: Array<string> = []
-  files.push(resolveLocalPath('src/targets/webpack/karma/plugins/mocha.js'))
-  if (opts.react) files.push(resolveLocalPath('src/targets/webpack/karma/plugins/enzyme.js'))
-  files.push(resolveLocalPath('src/targets/webpack/karma/plugins/dirty-chai.js'))
-  files.push(resolveLocalPath('src/targets/webpack/karma/plugins/test-importer.js'))
+  files.push(resolveLocalPath('src/compilers/web-app/karma/plugins/mocha.js'))
+  if (opts.react) files.push(resolveLocalPath('src/compilers/web-app/karma/plugins/enzyme.js'))
+  files.push(resolveLocalPath('src/compilers/web-app/karma/plugins/dirty-chai.js'))
+  files.push(resolveLocalPath('src/compilers/web-app/karma/plugins/test-importer.js'))
 
   const karmaConfig = {
     basePath: opts.basePath,

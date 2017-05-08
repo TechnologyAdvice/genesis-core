@@ -1,9 +1,9 @@
-import { ICompilerConfig } from '../../lib/compiler'
+import { ICompilerConfig } from '../../../lib/compiler'
 import * as path from 'path'
 import * as webpack from 'webpack'
 import * as HtmlWebpackPlugin from 'html-webpack-plugin'
 import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
-import { findGenesisDependency } from '../../utils/paths'
+import { findGenesisDependency } from '../../../utils/paths'
 
 export default function createWebpackConfig (opts: ICompilerConfig) {
   const inProject = (...paths: Array<string>) => path.resolve(opts.basePath, ...paths)
@@ -32,7 +32,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     resolve: {
       extensions: ['*', '.js', '.json', '.ts', '.tsx'],
     },
-    externals: Object.assign({}, opts.externals),
+    externals: opts.externals,
     module: {
       rules: [
         {

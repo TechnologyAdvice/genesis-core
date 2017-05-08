@@ -1,23 +1,15 @@
 <div align="center">
-  <h1>genesis-core</h1>
-  <p>Simplified build tooling for a complicated world</p>
+  <h1>Genesis Core</h1>
+  <p>Simplified build tooling for a <a href="https://github.com/matthiasn/talk-transcripts/blob/master/Hickey_Rich/SimpleMadeEasy.md">complected</a> world</p>
 </div>
 
-A simplified interface over advanced build tooling that allows you to take advantage of the modern JavaScript ecosystem without any of the headache. The interface, configuration, and usage of genesis-core remains the same no matter what type of project you are developing, such as Single Page Applications and distributable NPM libraries.
+Genesis Core provides a consistent, simplified interface over powerful build tooling, allowing you to take advantage of the modern JavaScript ecosystem without any of the headache. [Configure](#configuration) it once and get to work; you'll enjoy the same experience whether you're building a [Single Page Application](#web-app) or [distributable NPM package](#npm-package).
 
 ## Table of Contents
 1. [Features](#features)
 1. [Installation](#installation)
-1. [Usage](#usage)
+1. [Targets](#usage)
 1. [Configuration](#configuration)
-
-## Features
-
-* [TypeScript]
-* [Live Development]
-* [Browser Testing]
-* [Transpilation]
-* [Production Optimizations]
 
 ## Installation
 
@@ -29,7 +21,15 @@ yarn add @technologyadvice/genesis-core
 npm install --save @technologyadvice/genesis-core
 ```
 
-## Usage
+## Targets
+* [Web App](#web-app)
+* [NPM Package](#npm-package)
+
+### Web App
+
+### NPM Package
+
+This compiler is still in progress.
 
 ## Configuration
 

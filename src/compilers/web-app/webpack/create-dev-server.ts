@@ -5,7 +5,7 @@ import * as webpack from 'webpack'
 import * as chalk from 'chalk'
 import * as webpackDevMiddleware from 'webpack-dev-middleware'
 import * as webpackHotMiddleware from 'webpack-hot-middleware'
-import createWebpackConfig from '../create-webpack-config'
+import createWebpackConfig from './create-config'
 import { findGenesisDependency } from '../../../utils/paths'
 import * as logger from '../../../utils/logger'
 
