@@ -5,7 +5,7 @@ export type Environment =
 | 'production'
 
 export interface ICompilerConfig {
-  /** The environment to use when compiling the project */
+  /** The environment to use when building the project */
   env          : Environment,
   /** The full path to the project's root directory */
   basePath     : string,
@@ -15,7 +15,7 @@ export interface ICompilerConfig {
   outDir       : string
   /** The file name of the project's main entry point (defaults to main.js) */
   main         : string,
-  /** The full path to the HTML template to use with the project */
+  /** The full path to the HTML file to use as the project template */
   templatePath : string | null,
   /** The base path for all projects assets (relative to the root) */
   publicPath   : string,
@@ -34,7 +34,7 @@ export interface ICompilerConfig {
   minify       : boolean,
   /** Whether to generate sourcemaps */
   sourcemaps   : boolean,
-  /** TypeScript configuration */
+  /** TypeScript-specific configuration */
   typescript   : {
     /** The full path to the tsconfig.json file to use */
     configPath : string | null,
