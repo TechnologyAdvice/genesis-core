@@ -141,6 +141,11 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       collapseWhitespace: true,
     },
   }
+  // HtmlWebpackPlugin doesn't work if `template` is undefined or null, so
+  // we have to explicitly delete the key when it's undefined.
+  if (!htmlWebpackPluginOpts.template) {
+    delete htmlWebpackPluginOpts.template
+  }
   config.plugins.push(new HtmlWebpackPlugin(htmlWebpackPluginOpts))
 
   if (!__TEST__) {
