@@ -10,13 +10,12 @@ export interface KarmaOptions {
 export default function createKarmaConfig (webpackConfig: any, opts: KarmaOptions) {
   const files: Array<string> = []
   files.push(resolveLocalPath('src/compilers/web-app/karma/plugins/mocha.js'))
-  if (opts.react) files.push(resolveLocalPath('src/compilers/web-app/karma/plugins/enzyme.js'))
-  files.push(resolveLocalPath('src/compilers/web-app/karma/plugins/dirty-chai.js'))
   files.push(resolveLocalPath('src/compilers/web-app/karma/plugins/test-importer.js'))
 
   const karmaConfig = {
     basePath: opts.basePath,
     browsers: ['PhantomJS'],
+    singleRun: !opts.watch,
     coverageReporter: {
       reporters: [
         { type: 'text-summary' },
@@ -25,12 +24,11 @@ export default function createKarmaConfig (webpackConfig: any, opts: KarmaOption
     files,
     frameworks: ['mocha'],
     reporters: ['mocha'],
-    logLevel: 'WARN',
     preprocessors: files.reduce((acc, file) => ({
       ...acc,
       [file]: ['webpack'],
     }), {}),
-    singleRun: !opts.watch,
+    logLevel: 'WARN',
     browserConsoleLogOptions: {
       terminal: true,
       format: '%b %T: %m',
@@ -44,6 +42,7 @@ export default function createKarmaConfig (webpackConfig: any, opts: KarmaOption
         new webpack.DefinePlugin({
           __TESTS_ROOT__: JSON.stringify(path.resolve(opts.basePath, 'test')),
           __TESTS_PATTERN__: /\.(spec|test)\.(js|ts|tsx)$/,
+          __ENZYME__: !!opts.react,
         })
       ]),
       resolve: webpackConfig.resolve,
@@ -57,9 +56,9 @@ export default function createKarmaConfig (webpackConfig: any, opts: KarmaOption
   if (opts.react) {
     karmaConfig.webpack.externals = {
       ...karmaConfig.webpack.externals,
-      'react/addons': true,
-      'react/lib/ReactContext': true,
-      'react/lib/ExecutionEnvironment': true,
+      'react/addons': 'react',
+      'react/lib/ExecutionEnvironment': 'react',
+      'react/lib/ReactContext': 'react',
     }
   }
 
