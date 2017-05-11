@@ -1,6 +1,5 @@
 import * as path from 'path'
 import * as webpack from 'webpack'
-import formatError from './format-error'
 import { resolveLocalPath } from '../../../utils/paths'
 
 export interface KarmaOptions {
@@ -30,7 +29,6 @@ export default function createKarmaConfig (webpackConfig: any, opts: KarmaOption
       [file]: ['webpack'],
     }), {}),
     logLevel: 'WARN',
-    formatError,
     browserConsoleLogOptions: {
       terminal: true,
       format: '%b %T: %m',
