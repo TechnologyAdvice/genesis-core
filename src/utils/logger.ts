@@ -1,5 +1,5 @@
-import * as figures from 'figures'
 import * as chalk from 'chalk'
+import * as figures from './figures'
 
 // HACK: disable annoying loaderUtils warning
 // TODO(zuko): remove this when fixed
@@ -27,4 +27,3 @@ export const warn = (...messages: Array<any>) => {
 export const error = (...messages: Array<any>) => {
   console.warn(chalk.red(figures.cross, ...messages))
 }
-
