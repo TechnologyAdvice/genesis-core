@@ -14,7 +14,7 @@
     "removeComments": false,
     "preserveConstEnums": false,
     "sourceMap": false,
-    "rootDir": "./src",
+    "rootDir": "src",
     "outDir": "dist",
     "pretty": true,
     "types": [
@@ -24,8 +24,5 @@
   "include": [
     "./src",
     "./declarations"
-  ],
-  "exclude": [
-    "./src/tasks"
   ]
 }
