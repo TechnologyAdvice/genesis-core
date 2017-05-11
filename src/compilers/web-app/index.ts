@@ -1,6 +1,5 @@
 import * as webpack from 'webpack'
 import { ICompiler, ICompilerConfig } from '../../lib/compiler'
-import promisify from '../../utils/promisify'
 import createWebpackConfig from './webpack/create-config'
 import WebpackDevServer, { DevServerOpts } from './webpack/create-dev-server'
 import createKarmaConfig from './karma/create-config'
@@ -17,8 +16,14 @@ class WebAppCompiler implements ICompiler {
    * Compiles the web application by bundling assets and saving them to disk.
    */
   async compile () {
-    const compiler = webpack(createWebpackConfig(this.config) as any)
-    return await promisify(compiler.run)()
+    const compile = () => new Promise((resolve, reject) => {
+      const compiler = webpack(createWebpackConfig(this.config) as any)
+      compiler.run((err, stats) => {
+        if (err) reject(err)
+        else resolve(stats)
+      })
+    })
+    return await compile()
   }
 
   /**
