@@ -20,7 +20,7 @@ class DevServer {
       host: 'localhost',
       port: 3000,
       contentBase: path.resolve(config.basePath, config.srcDir),
-      onCompilerStart: this._onCompileStart.bind(this),
+      onCompilerFinish: this._onCompilerFinish.bind(this),
     }
     const opts: CreateDevMiddlewareOpts = Object.assign(defaults, overrides)
 
@@ -36,7 +36,7 @@ class DevServer {
     })
   }
 
-  _onCompileStart (stats: any) {
+  _onCompilerFinish (stats: any) {
     const hasErrors = stats.hasErrors()
     const hasWarnings = stats.hasWarnings()
 
