@@ -62,10 +62,12 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       query: {
         cacheDirectory: true,
         plugins: [
+          findGenesisDependency('babel-plugin-transform-class-properties'),
           findGenesisDependency('babel-plugin-transform-runtime'),
         ],
         presets: [
           findGenesisDependency('babel-preset-react'),
+          findGenesisDependency('babel-preset-stage-1'),
           [findGenesisDependency('babel-preset-env'), {
             targets: {
               browsers: ['last 2 versions'],
