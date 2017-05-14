@@ -12,12 +12,16 @@ import * as figures from './figures'
   }
 })()
 
+export const log = (...messages: Array<any>) => {
+  console.log.apply(console, messages)
+}
+
 export const info = (...messages: Array<any>) => {
   console.info(chalk.cyan(figures.info, ...messages))
 }
 
 export const success = (...messages: Array<any>) => {
-  console.log(chalk.green(figures.tick, ...messages))
+  log(chalk.green(figures.tick, ...messages))
 }
 
 export const warn = (...messages: Array<any>) => {
