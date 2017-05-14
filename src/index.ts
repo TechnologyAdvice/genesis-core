@@ -22,8 +22,14 @@ const COMPILER_DEFAULTS: ICompilerConfig = {
 }
 
 export default (opts: Partial<ICompilerConfig>): ICompiler => {
-  // TODO(zuko): need to support deep merging
-  const config: ICompilerConfig = Object.assign({}, COMPILER_DEFAULTS, opts)
+  const config: ICompilerConfig = {
+    ...COMPILER_DEFAULTS,
+    ...opts,
+    typescript: {
+      ...COMPILER_DEFAULTS.typescript,
+      ...(opts && opts.typescript),
+    }
+  }
 
   if (!config.env) {
     config.env = 'development'
