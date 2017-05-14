@@ -15,7 +15,7 @@ global.sinon = sinon
 
 // Chai Plugins
 // ------------------------------------
-if (__ENZYME__) {
+if (__REACT__) {
   const enzyme = require('enzyme')
   const chaiEnzyme = require('chai-enzyme')
 

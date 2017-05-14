@@ -42,7 +42,7 @@ export default function createKarmaConfig (webpackConfig: any, opts: KarmaOption
         new webpack.DefinePlugin({
           __TESTS_ROOT__: JSON.stringify(path.resolve(opts.basePath, 'test')),
           __TESTS_PATTERN__: /\.(spec|test)\.(js|ts|tsx)$/,
-          __ENZYME__: !!opts.react,
+          __REACT__: !!opts.react,
         })
       ]),
       resolve: webpackConfig.resolve,
