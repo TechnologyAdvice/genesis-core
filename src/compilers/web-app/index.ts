@@ -58,18 +58,18 @@ class WebAppCompiler implements ICompiler {
    * Starts the test runner for. Can be run in watch mode to automatically
    * rerun tests when file changes are detected.
    */
-  async test (opts: Partial<{ watch: boolean, mocks: Mocks }>) {
+  async test (opts: Partial<{ watch: boolean, mocks: Mocks }> = {}) {
     const config = Object.assign({}, this.config, { env: 'test' })
     const webpackConfig = createWebpackConfig(config)
 
-    if (opts && opts.mocks && !isEmpty(opts.mocks)) {
+    if (opts.mocks && !isEmpty(opts.mocks)) {
       this._printMockedModules(opts.mocks)
       webpackConfig.resolve = { ...webpackConfig.resolve, alias: opts.mocks }
     }
     const karmaConfig = createKarmaConfig(webpackConfig, {
       basePath: this.config.basePath,
       react: true,
-      watch: opts && opts.watch,
+      watch: !!opts.watch,
     })
     return await createKarmaServer(karmaConfig).start()
   }
