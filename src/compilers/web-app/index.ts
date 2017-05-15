@@ -7,6 +7,7 @@ import createKarmaConfig from './karma/create-config'
 import createKarmaServer from './karma/create-server'
 import { isEmpty, keys } from 'halcyon'
 import * as logger from '../../utils/logger'
+import { bullet, arrowRight } from '../../utils/figures'
 
 export type Mocks = { [key: string]: string }
 
@@ -46,8 +47,10 @@ class WebAppCompiler implements ICompiler {
   _printMockedModules (mocks: Mocks) {
     logger.info('Enabling mocks for the following modules:')
     keys(mocks).sort().forEach((mod: string) => {
-      const mock = mocks[mod].replace(this.config.basePath, '.')
-      logger.log(`  ● ${mod} → ${chalk.dim(mock)}`)
+      const mockPath = mocks[mod].replace(this.config.basePath, '.')
+
+      // ● module → ./path/to/mock
+      logger.log(`  ${bullet} ${mod} ${arrowRight} ${chalk.dim(mockPath)}`)
     })
   }
 
