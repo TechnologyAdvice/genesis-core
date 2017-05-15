@@ -14,7 +14,6 @@ const COMPILER_DEFAULTS: ICompilerConfig = {
   globals      : {},
   vendors      : [],
   verbose      : false,
-  minify       : false,
   sourcemaps   : true,
   typescript   : {
     configPath : null,

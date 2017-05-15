@@ -91,7 +91,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         // UglifyJS does not yet support all ES6 features, so when minification
         // is enabled we need to process the TypeScript output with Babel to ensure
         // it can be understood by UglifyJS.
-        useBabel: opts.minify,
+        useBabel: __PROD__ || __STAGING__,
         silent: true,
         babelOptions: {
           presets: [
@@ -159,7 +159,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     }
     config.plugins.push(new webpack.optimize.CommonsChunkPlugin({ names: bundles }))
   }
-  if (opts.minify) {
+  if (__PROD__ || __STAGING__) {
     config.plugins.push(
       new webpack.LoaderOptionsPlugin({
         minimize: true,

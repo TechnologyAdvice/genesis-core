@@ -57,8 +57,6 @@ This compiler is still in progress.
   vendors      : Array<string>,
   /** Whether to run the compiler with verbose logging */
   verbose      : boolean,
-  /** Whether to minify the emitted code */
-  minify       : boolean,
   /** Whether to generate sourcemaps */
   sourcemaps   : boolean,
   /** TypeScript configuration */
