@@ -1,9 +1,14 @@
 import * as webpack from 'webpack'
+import * as chalk from 'chalk'
 import { ICompiler, ICompilerConfig } from '../../lib/compiler'
 import createWebpackConfig from './webpack/create-config'
 import WebpackDevServer, { DevServerOpts } from './webpack/create-dev-server'
 import createKarmaConfig from './karma/create-config'
 import createKarmaServer from './karma/create-server'
+import { isEmpty, keys } from 'halcyon'
+import * as logger from '../../utils/logger'
+
+export type Mocks = { [key: string]: string }
 
 class WebAppCompiler implements ICompiler {
   public config: ICompilerConfig
@@ -35,23 +40,34 @@ class WebAppCompiler implements ICompiler {
   }
 
   /**
-   * Starts the test runner for the web application. Can be run in watch
-   * mode to rerun tests when changes are detected.
+   * Pretty prints the set of modules that are mocked during testing,
+   * displaying the module name and the path to its corresponding mock.
    */
-  async test (opts?: Partial<{ watch: boolean, mocks: Object }>) {
-    const config: ICompilerConfig = { ...this.config, env: 'test' }
+  _printMockedModules (mocks: Mocks) {
+    logger.info('Enabling mocks for the following modules:')
+    keys(mocks).sort().forEach((mod: string) => {
+      const mock = mocks[mod].replace(this.config.basePath, '.')
+      logger.log(`  ● ${mod} → ${chalk.dim(mock)}`)
+    })
+  }
+
+  /**
+   * Starts the test runner for. Can be run in watch mode to automatically
+   * rerun tests when file changes are detected.
+   */
+  async test (opts: Partial<{ watch: boolean, mocks: Mocks }>) {
+    const config = Object.assign({}, this.config, { env: 'test' })
     const webpackConfig = createWebpackConfig(config)
 
-    if (opts && opts.mocks) {
-      webpackConfig.resolve = Object.assign({}, webpackConfig.resolve || {})
-      Object.assign(webpackConfig.resolve, { alias: opts.mocks })
+    if (opts && opts.mocks && !isEmpty(opts.mocks)) {
+      this._printMockedModules(opts.mocks)
+      webpackConfig.resolve = { ...webpackConfig.resolve, alias: opts.mocks }
     }
     const karmaConfig = createKarmaConfig(webpackConfig, {
       basePath: this.config.basePath,
       react: true,
       watch: opts && opts.watch,
     })
-
     return await createKarmaServer(karmaConfig)
   }
 }
