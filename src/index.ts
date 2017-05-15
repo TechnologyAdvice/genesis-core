@@ -38,11 +38,5 @@ export default (opts: Partial<ICompilerConfig>): ICompiler => {
       'Set process.env.NODE_ENV or the "env" property in your genesis configuration.'
     )
   }
-  // TODO(zuko): figure out the best place for this. Bigger question is how to best
-  // organize environment-specific overrides.
-  if (config.env === 'production' || config.env === 'staging') {
-    config.minify = true
-  }
-
   return new WebAppCompiler(config)
 }
