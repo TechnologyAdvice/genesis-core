@@ -71,7 +71,7 @@ class WebAppCompiler implements ICompiler {
       react: true,
       watch: opts && opts.watch,
     })
-    return await createKarmaServer(karmaConfig)
+    return await createKarmaServer(karmaConfig).start()
   }
 }
 
