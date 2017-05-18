@@ -20,7 +20,9 @@ if (__DEV__) {
       }
     }
 
-    module.hot.accept('./routes', () => {
+    module.hot.accept([
+      './src/components/App'
+    ], () => {
       setImmediate(() => {
         ReactDOM.unmountComponentAtNode(APP_ROOT)
         render()

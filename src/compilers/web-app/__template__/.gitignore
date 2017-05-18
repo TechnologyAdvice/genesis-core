@@ -1,9 +1,0 @@
-*.iml
-*.log*
-.awcache
-.DS_Store
-.idea/
-.yarn-cache
-coverage/
-dist/
-node_modules/
