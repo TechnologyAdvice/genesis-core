@@ -22,7 +22,9 @@
     ]
   },
   "include": [
-    "./src",
-    "./declarations"
+    "./src"
+  ],
+  "exclude": [
+    "./src/compilers/web-app/__template__/**"
   ]
 }

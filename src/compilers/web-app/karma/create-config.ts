@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as webpack from 'webpack'
-import { resolveLocalPath } from '../../../utils/paths'
+import { findGenesisFile } from '../../../utils/paths'
 
 export interface KarmaOptions {
   basePath: string,
@@ -9,8 +9,8 @@ export interface KarmaOptions {
 }
 export default function createKarmaConfig (webpackConfig: any, opts: KarmaOptions) {
   const files: Array<string> = []
-  files.push(resolveLocalPath('src/compilers/web-app/karma/plugins/mocha.js'))
-  files.push(resolveLocalPath('src/compilers/web-app/karma/plugins/test-importer.js'))
+  files.push(findGenesisFile('src/compilers/web-app/karma/plugins/mocha.js'))
+  files.push(findGenesisFile('src/compilers/web-app/karma/plugins/test-importer.js'))
 
   const karmaConfig = {
     basePath: opts.basePath,
@@ -46,7 +46,7 @@ export default function createKarmaConfig (webpackConfig: any, opts: KarmaOption
         })
       ]),
       resolve: webpackConfig.resolve,
-      externals: webpackConfig.externals,
+      externals: {},
     },
     webpackMiddleware: {
       stats: 'errors-only',
@@ -55,7 +55,6 @@ export default function createKarmaConfig (webpackConfig: any, opts: KarmaOption
   }
   if (opts.react) {
     karmaConfig.webpack.externals = {
-      ...karmaConfig.webpack.externals,
       'react/addons': 'react',
       'react/lib/ExecutionEnvironment': 'react',
       'react/lib/ReactContext': 'react',

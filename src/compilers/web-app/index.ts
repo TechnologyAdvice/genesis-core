@@ -1,16 +1,23 @@
 import * as webpack from 'webpack'
 import * as chalk from 'chalk'
+import * as path from 'path'
 import { ICompiler, ICompilerConfig } from '../../lib/compiler'
 import createWebpackConfig from './webpack/create-config'
 import WebpackDevServer, { DevServerOpts } from './webpack/create-dev-server'
 import createKarmaConfig from './karma/create-config'
 import createKarmaServer from './karma/create-server'
-import { isEmpty, keys } from 'halcyon'
 import * as logger from '../../utils/logger'
 import { bullet, arrowRight } from '../../utils/figures'
 
-export type Mocks = { [key: string]: string }
+const isEmpty = (obj?: Object) => !obj || Object.keys(obj).length === 0
 
+export type Mocks = { [key: string]: string }
+export type RunOpts = DevServerOpts
+export type TestOpts = {
+  mocks: Mocks,
+  react: boolean,
+  watch: boolean,
+}
 class WebAppCompiler implements ICompiler {
   public config: ICompilerConfig
 
@@ -19,9 +26,25 @@ class WebAppCompiler implements ICompiler {
   }
 
   /**
-   * Compiles the web application by bundling assets and saving them to disk.
+   * Initializes a new application in the current directory
    */
-  async compile () {
+  async init () {
+    const ncp = require('ncp').ncp
+    const template = path.resolve(__dirname, '../../../src/compilers/web-app/__template__')
+    const dest = process.cwd()
+    const opts = { clobber: false }
+
+    await new Promise((resolve, reject) => {
+      ncp(template, dest, opts, (err: Error) => {
+        err ? reject(err) : resolve()
+      })
+    })
+  }
+
+  /**
+   * Builds the application to disk.
+   */
+  async build () {
     const compile = () => new Promise((resolve, reject) => {
       const compiler = webpack(createWebpackConfig(this.config) as any)
       compiler.run((err, stats) => {
@@ -33,10 +56,9 @@ class WebAppCompiler implements ICompiler {
   }
 
   /**
-   * Runs a development server for the web application which serves the
-   * generated assets and watches for changes.
+   * Starts the development server for the web application.
    */
-  async run (opts?: Partial<DevServerOpts>) {
+  async start (opts?: Partial<RunOpts>) {
     return await new WebpackDevServer(this.config, opts).start()
   }
 
@@ -44,9 +66,9 @@ class WebAppCompiler implements ICompiler {
    * Pretty prints the set of modules that are mocked during testing,
    * displaying the module name and the path to its corresponding mock.
    */
-  _printMockedModules (mocks: Mocks) {
+  private _printMockedModules (mocks: Mocks) {
     logger.info('Enabling mocks for the following modules:')
-    keys(mocks).sort().forEach((mod: string) => {
+    Object.keys(mocks).sort().forEach((mod: string) => {
       const mockPath = mocks[mod].replace(this.config.basePath, '.')
 
       // ● module → ./path/to/mock
@@ -58,17 +80,18 @@ class WebAppCompiler implements ICompiler {
    * Starts the test runner for. Can be run in watch mode to automatically
    * rerun tests when file changes are detected.
    */
-  async test (opts: Partial<{ watch: boolean, mocks: Mocks }> = {}) {
+  async test (opts: Partial<TestOpts> = { react: true }) {
+    logger.info('Enforcing environment: ' + chalk.bold('test'))
     const config = Object.assign({}, this.config, { env: 'test' })
     const webpackConfig = createWebpackConfig(config)
 
-    if (opts.mocks && !isEmpty(opts.mocks)) {
-      this._printMockedModules(opts.mocks)
+    if (!isEmpty(opts.mocks)) {
+      this._printMockedModules(opts.mocks!)
       webpackConfig.resolve = { ...webpackConfig.resolve, alias: opts.mocks }
     }
     const karmaConfig = createKarmaConfig(webpackConfig, {
       basePath: this.config.basePath,
-      react: true,
+      react: opts.react,
       watch: !!opts.watch,
     })
     return await createKarmaServer(karmaConfig).start()

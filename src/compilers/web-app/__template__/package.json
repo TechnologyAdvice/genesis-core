@@ -1,0 +1,24 @@
+{
+  "name": "my-react-app",
+  "version": "0.0.0",
+  "description": "",
+  "main": "src/main",
+  "repository": "",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "start": "node build/start",
+    "build": "rm -rf dist && node build/build",
+    "test": "node build/test"
+  },
+  "dependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  },
+  "devDependencies": {
+    "@technologyadvice/genesis-core": "^0.3.0",
+    "@types/react": "^15.0.24",
+    "@types/react-dom": "^15.5.0",
+    "typescript": "^2.3.2"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "jsx": "react",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "target": "es2015",
+    "strict": true,
+    "sourceMap": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "pretty": true,
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "./src"
+  ]
+}

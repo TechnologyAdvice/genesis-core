@@ -1,46 +1,36 @@
-export type Environment =
-  'development'
-| 'staging'
-| 'test'
-| 'production'
+const path = require('path')
 
-export interface ICompilerConfig {
+module.exports = {
   /** The environment to use when building the project */
-  env          : Environment,
+  env          : process.env.NODE_ENV || 'development',
   /** The full path to the project's root directory */
-  basePath     : string,
+  basePath     : __dirname,
   /** The name of the directory containing the project's source code */
-  srcDir       : string,
+  srcDir       : 'src',
   /** The name of the directory in which to emit compiled code */
-  outDir       : string
+  outDir       : 'dist',
   /** The file name of the project's main entry point (defaults to main.js) */
-  main         : string,
+  main         : 'main',
   /** The full path to the HTML file to use as the project template */
-  templatePath : string | null,
+  templatePath : null,
   /** The base path for all projects assets (relative to the root) */
-  publicPath   : string,
+  publicPath   : '/',
   /** A hash map of keys that the compiler should treat as external to the project */
-  externals    : {
-    [key: string] : string,
-  },
+  externals    : {},
   /** A hash map of identifiers and their values to expose as global variables */
-  globals      : Object,
-  // TODO(zuko): figure out a better name
+  globals      : {},
   /** The list of modules to compile separately from the core project code */
-  vendors      : Array<string>,
+  vendors      : [
+    'react',
+    'react-dom',
+  ],
   /** Whether to enable verbose logging */
-  verbose      : boolean,
+  verbose      : false,
   /** Whether to generate sourcemaps */
-  sourcemaps   : boolean,
+  sourcemaps   : true,
   /** TypeScript-specific configuration */
   typescript   : {
     /** The full path to the tsconfig.json file to use */
-    configPath : string | null,
+    configPath : path.resolve(__dirname, 'tsconfig.json'),
   }
-}
-
-export interface ICompiler {
-  build (opts?: any): Promise<any>
-  start (opts?: any): Promise<any>
-  test (opts?: any): Promise<any>
 }

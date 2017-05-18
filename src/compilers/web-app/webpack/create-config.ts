@@ -9,10 +9,9 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   const inProject = (...paths: Array<string>) => path.resolve(opts.basePath, ...paths)
   const inProjectSrc = (file: string) => inProject(opts.srcDir, file)
 
-  const __DEV__     = opts.env === 'development'
-  const __STAGING__ = opts.env === 'staging'
-  const __TEST__    = opts.env === 'test'
-  const __PROD__    = opts.env === 'production'
+  const __DEV__  = opts.env === 'development'
+  const __TEST__ = opts.env === 'test'
+  const __PROD__ = opts.env === 'production'
 
   const config = {
     entry: {
@@ -30,22 +29,16 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       publicPath: opts.publicPath,
     },
     resolve: {
-      extensions: ['*', '.js', '.json', '.ts', '.tsx'],
+      extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
     },
     externals: opts.externals,
     module: {
-      rules: [
-        {
-          test: /\.(eot|gif|jpg|jpeg|png|svg|ttf|woff|woff2)$/,
-          use: findGenesisDependency('file-loader'),
-        },
-      ] as Array<any>,
+      rules: [] as Array<any>,
     },
     plugins: [
       new webpack.DefinePlugin(Object.assign({
         'process.env': { NODE_ENV: JSON.stringify(opts.env) },
         __DEV__,
-        __STAGING__,
         __TEST__,
         __PROD__,
       }, opts.globals)),
@@ -63,15 +56,29 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         cacheDirectory: true,
         plugins: [
           findGenesisDependency('babel-plugin-transform-class-properties'),
-          findGenesisDependency('babel-plugin-transform-runtime'),
+          findGenesisDependency('babel-plugin-syntax-dynamic-import'),
+          [
+            findGenesisDependency('babel-plugin-transform-runtime'),
+            {
+              helpers: true,
+              polyfill: false,
+              regenerator: true,
+            },
+          ],
+          [
+            findGenesisDependency('babel-plugin-transform-object-rest-spread'),
+            {
+              usBuiltIns: true,
+            },
+          ]
         ],
         presets: [
           findGenesisDependency('babel-preset-react'),
-          findGenesisDependency('babel-preset-stage-1'),
           [findGenesisDependency('babel-preset-env'), {
             targets: {
-              browsers: ['last 2 versions'],
+              ie9: true,
               uglify: true,
+              modules: false,
             },
           }],
         ]
@@ -91,7 +98,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         // UglifyJS does not yet support all ES6 features, so when minification
         // is enabled we need to process the TypeScript output with Babel to ensure
         // it can be understood by UglifyJS.
-        useBabel: __PROD__ || __STAGING__,
+        useBabel: __PROD__,
         silent: true,
         babelOptions: {
           presets: [
@@ -108,21 +115,55 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
 
   // Styles
   // ------------------------------------
-  const extractSass = new ExtractTextPlugin({
-    filename: '[name].css',
+  const cssLoader = {
+    loader: findGenesisDependency('css-loader'),
+    options: {
+      sourceMap: opts.sourcemaps,
+      minimize: {
+        autoprefixer: {
+          add: true,
+          remove: true,
+          browsers: ['last 2 versions'],
+        },
+        discardComments: {
+          removeAll : true,
+        },
+        discardUnused: false,
+        mergeIdents: false,
+        reduceIdents: false,
+        safe: true,
+        sourcemap: opts.sourcemaps,
+      },
+    },
+  }
+
+  const extractStyles = new ExtractTextPlugin({
+    filename: 'styles/[name].[contenthash].css',
+    allChunks: true,
     disable: __DEV__,
   })
 
   config.module.rules.push({
-    test: /\.(sass|scss)$/,
+    test: /\.(css)$/,
     exclude: /node_modules/,
-    loader: extractSass.extract({
+    loader: extractStyles.extract({
       fallback: findGenesisDependency('style-loader'),
       use: [
-        findGenesisDependency('css-loader?sourceMap'),
+        cssLoader,
+      ],
+    })
+  })
+  config.module.rules.push({
+    test: /\.(sass|scss)$/,
+    exclude: /node_modules/,
+    loader: extractStyles.extract({
+      fallback: findGenesisDependency('style-loader'),
+      use: [
+        cssLoader,
         {
-          loader: findGenesisDependency('sass-loader?sourceMap'),
-          query: {
+          loader: findGenesisDependency('sass-loader'),
+          options: {
+            sourceMap: opts.sourcemaps,
             includePaths: [
               inProjectSrc('styles'),
             ],
@@ -131,7 +172,39 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       ],
     })
   })
-  config.plugins.push(extractSass)
+  config.plugins.push(extractStyles)
+
+  // Images
+  // ------------------------------------
+  config.module.rules.push({
+    test    : /\.(png|jpg|gif)$/,
+    loader  : 'url-loader',
+    options : {
+      limit : 8192,
+    },
+  })
+
+  // Fonts
+  // ------------------------------------
+  const FONT_TYPES = new Map([
+    ['woff', 'application/font-woff'],
+    ['woff2', 'application/font-woff2'],
+    ['otf', 'font/opentype'],
+    ['ttf', 'application/octet-stream'],
+    ['eot', 'application/vnd.ms-fontobject'],
+    ['svg', 'image/svg+xml'],
+  ])
+  for (let [extension, mimetype] of FONT_TYPES) {
+    config.module.rules.push({
+      test    : new RegExp(`\\.${extension}$`),
+      loader  : 'url-loader',
+      options : {
+        name  : 'fonts/[name].[ext]',
+        limit : 10000,
+        mimetype,
+      },
+    })
+  }
 
   // HTML Template
   // ------------------------------------
@@ -150,6 +223,8 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   }
   config.plugins.push(new HtmlWebpackPlugin(htmlWebpackPluginOpts))
 
+  // Bundle Splitting
+  // ------------------------------------
   if (!__TEST__) {
     const bundles = ['manifest']
 
@@ -159,7 +234,10 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     }
     config.plugins.push(new webpack.optimize.CommonsChunkPlugin({ names: bundles }))
   }
-  if (__PROD__ || __STAGING__) {
+
+  // Production Optimizations
+  // ------------------------------------
+  if (__PROD__) {
     config.plugins.push(
       new webpack.LoaderOptionsPlugin({
         minimize: true,
