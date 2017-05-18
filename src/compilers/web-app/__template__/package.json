@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node build/start",
-    "build": "rm -rf dist && node build/build",
+    "build": "rm -rf dist && NODE_ENV=production node build/build",
     "test": "node build/test"
   },
   "dependencies": {
