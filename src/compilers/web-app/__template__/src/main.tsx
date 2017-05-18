@@ -2,7 +2,8 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import './styles/main.scss'
 
-const APP_ROOT = document.getElementById('root')!
+const APP_ROOT = document.createElement('div')!
+document.body.appendChild(APP_ROOT)
 
 let render = () => {
   const App = require('./components/App').default
@@ -21,7 +22,7 @@ if (__DEV__) {
     }
 
     module.hot.accept([
-      './src/components/App'
+      './components/App'
     ], () => {
       setImmediate(() => {
         ReactDOM.unmountComponentAtNode(APP_ROOT)
