@@ -21,6 +21,7 @@ class DevServer {
       port: 3000,
       contentBase: path.resolve(config.basePath, config.srcDir),
       onCompilerFinish: this._onCompilerFinish.bind(this),
+      onCompilerStart: this._onCompilerStart.bind(this),
     }
     const opts: CreateDevMiddlewareOpts = Object.assign(defaults, overrides)
 
@@ -29,11 +30,16 @@ class DevServer {
     this._server.use(createDevMiddleware(createWebpackConfig(config), opts))
     this._server.use(express.static(path.resolve(config.basePath, 'public')))
     this._server.start = () => new Promise(resolve => {
-      this._server.listen(opts.port, () => {
-        logger.info(chalk.bold(`Development server running at http://localhost:${opts.port}.`))
+      this._server.listen(opts.port, opts.host, () => {
+        logger.info(chalk.bold(`Development server started on http://${opts.host}:${opts.port}.`))
+        logger.info('Starting compiler...')
         resolve()
       })
     })
+  }
+
+  _onCompilerStart () {
+    logger.info('Change detected; starting compiler...')
   }
 
   _onCompilerFinish (stats: any) {
@@ -47,8 +53,8 @@ class DevServer {
       logger.warn(stats.toString('errors-only'))
       logger.warn('Compilation finished with warnings, see above.')
     } else {
-      const buildTime = (stats.endTime - stats.startTime)
-      logger.success(`Compilation succeeded in ${buildTime}ms`)
+      const buildTime = ((stats.endTime - stats.startTime) / 1000).toFixed(2)
+      logger.success(`Compilation finished ` + chalk.dim(`(${buildTime}s)`) + `.`)
     }
   }
 

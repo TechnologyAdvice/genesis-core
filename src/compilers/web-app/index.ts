@@ -67,13 +67,14 @@ class WebAppCompiler implements ICompiler {
    * displaying the module name and the path to its corresponding mock.
    */
   private _printMockedModules (mocks: Mocks) {
-    logger.info('Enabling mocks for the following modules:')
+    logger.info('Enabling mocks for the following modules:\n')
     Object.keys(mocks).sort().forEach((mod: string) => {
       const mockPath = mocks[mod].replace(this.config.basePath, '.')
 
       // ● module → ./path/to/mock
-      logger.log(`  ${bullet} ${mod} ${arrowRight} ${chalk.dim(mockPath)}`)
+      logger.log(`${bullet} ${mod} ${arrowRight} ${chalk.dim(mockPath)}`)
     })
+    logger.log() // symmetrical padding
   }
 
   /**
@@ -94,6 +95,7 @@ class WebAppCompiler implements ICompiler {
       react: opts.react,
       watch: !!opts.watch,
     })
+    logger.info('Starting test runner...')
     return await createKarmaServer(karmaConfig).start()
   }
 }

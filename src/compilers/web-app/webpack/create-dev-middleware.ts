@@ -9,12 +9,12 @@ export type CreateDevMiddlewareOpts = {
   host: string,
   port: number,
   contentBase: string,
-  onCompilerStart?: (stats: any) => any,
+  onCompilerStart?: () => any,
   onCompilerFinish?: (stats: any) => any,
 }
 const createDevMiddleware = (webpackConfig: any, opts: CreateDevMiddlewareOpts): Array<Middleware> => {
   webpackConfig.output.publicPath = `${opts.protocol}://${opts.host}:${opts.port}/`
-    webpackConfig.entry.main.push(
+    webpackConfig.entry.main.unshift(
       findGenesisDependency('webpack-hot-middleware/client.js') +
       `?path=${webpackConfig.output.publicPath}__webpack_hmr`
     )
@@ -31,7 +31,7 @@ const createDevMiddleware = (webpackConfig: any, opts: CreateDevMiddlewareOpts):
     stats: 'none',
   })
   const hotMiddleware = webpackHotMiddleware(webpackCompiler, {
-    log: undefined,
+    log: () => {},
   })
 
   const middleware = [devMiddleware, hotMiddleware]
