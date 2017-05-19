@@ -18,6 +18,9 @@ const createDevMiddleware = (webpackConfig: any, opts: CreateDevMiddlewareOpts):
       findGenesisDependency('webpack-hot-middleware/client.js') +
       `?path=${webpackConfig.output.publicPath}__webpack_hmr`
     )
+    webpackConfig.entry.main.unshift(
+      findGenesisDependency('react-error-overlay'),
+    )
     webpackConfig.plugins.push(
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NamedModulesPlugin()
@@ -34,7 +37,7 @@ const createDevMiddleware = (webpackConfig: any, opts: CreateDevMiddlewareOpts):
     log: () => {},
   })
 
-  const middleware = [devMiddleware, hotMiddleware]
+  const middleware = [devMiddleware, hotMiddleware, require('react-error-overlay/middleware')()]
   if (opts.onCompilerStart) webpackCompiler.plugin('compile', opts.onCompilerStart)
   if (opts.onCompilerFinish) webpackCompiler.plugin('done', opts.onCompilerFinish)
   return middleware
