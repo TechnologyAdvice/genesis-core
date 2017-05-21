@@ -95,20 +95,8 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       query: {
         useCache: true,
         configFileName: opts.typescript.configPath,
-        // UglifyJS does not yet support all ES6 features, so when minification
-        // is enabled we need to process the TypeScript output with Babel to ensure
-        // it can be understood by UglifyJS.
-        useBabel: __PROD__,
+        useBabel: false,
         silent: true,
-        babelOptions: {
-          presets: [
-            [findGenesisDependency('babel-preset-env'), {
-              targets: {
-                uglify: true,
-              },
-            }],
-          ],
-        },
       },
     }],
   })
