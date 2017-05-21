@@ -12,7 +12,7 @@ module.exports = {
   /** The file name of the project's main entry point (defaults to main.js) */
   main         : 'main',
   /** The full path to the HTML file to use as the project template */
-  templatePath : null,
+  templatePath : path.resolve(__dirname, 'src/index.html'),
   /** The base path for all projects assets (relative to the root) */
   publicPath   : '/',
   /** A hash map of keys that the compiler should treat as external to the project */

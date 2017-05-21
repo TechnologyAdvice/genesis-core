@@ -7,9 +7,9 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "start": "node build/start",
-    "build": "rm -rf dist && NODE_ENV=production node build/build",
-    "test": "node build/test"
+    "start": "node scripts/start",
+    "build": "rm -rf dist && NODE_ENV=production node scripts/build",
+    "test": "node scripts/test"
   },
   "dependencies": {
     "react": "^15.5.4",
