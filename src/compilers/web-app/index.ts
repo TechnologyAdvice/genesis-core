@@ -8,8 +8,7 @@ import createKarmaConfig from './karma/create-config'
 import createKarmaServer from './karma/create-server'
 import * as logger from '../../utils/logger'
 import { bullet, arrowRight } from '../../utils/figures'
-
-const isEmpty = (obj?: Object) => !obj || Object.keys(obj).length === 0
+import { isEmpty } from 'redash'
 
 export type Mocks = { [key: string]: string }
 export type RunOpts = DevServerOpts
@@ -78,8 +77,8 @@ class WebAppCompiler implements ICompiler {
   }
 
   /**
-   * Starts the test runner for. Can be run in watch mode to automatically
-   * rerun tests when file changes are detected.
+   * Starts the test runner. Can be run in watch mode to stay running and
+   * automatically rerun tests when changes are detected.
    */
   async test (opts: Partial<TestOpts> = { react: true }) {
     logger.info('Enforcing environment: ' + chalk.bold('test'))

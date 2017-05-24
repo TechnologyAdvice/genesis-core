@@ -49,6 +49,7 @@
     "phantomjs-prebuilt": "^2.1.14",
     "react-addons-test-utils": "^15.5.1",
     "react-error-overlay": "^1.0.4",
+    "redash": "^0.20.1",
     "sass-loader": "^6.0.5",
     "sinon": "^2.3.0",
     "sinon-chai": "^2.10.0",
