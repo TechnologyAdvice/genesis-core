@@ -61,6 +61,10 @@ class DevServer {
   start () {
     return this._server.start()
   }
+
+  stop () {
+    this._server.close()
+  }
 }
 
 export default DevServer
