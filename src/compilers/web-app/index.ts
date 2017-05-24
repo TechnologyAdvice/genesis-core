@@ -27,17 +27,18 @@ class WebAppCompiler implements ICompiler {
   /**
    * Initializes a new application in the current directory
    */
-  async init () {
+  async init (): Promise<void> {
     const ncp = require('ncp').ncp
     const template = path.resolve(__dirname, '../../../src/compilers/web-app/__template__')
     const dest = process.cwd()
     const opts = { clobber: false }
 
-    await new Promise((resolve, reject) => {
+    const task = new Promise((resolve, reject) => {
       ncp(template, dest, opts, (err: Error) => {
         err ? reject(err) : resolve()
       })
-    })
+    }) as Promise<void>
+    return await task
   }
 
   /**
