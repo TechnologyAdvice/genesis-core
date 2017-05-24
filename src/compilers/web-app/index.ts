@@ -3,7 +3,7 @@ import * as chalk from 'chalk'
 import * as path from 'path'
 import { ICompiler, ICompilerConfig } from '../../lib/compiler'
 import createWebpackConfig from './webpack/create-config'
-import WebpackDevServer, { DevServerOpts } from './webpack/create-dev-server'
+import DevServer, { DevServerOpts } from './webpack/create-dev-server'
 import createKarmaConfig from './karma/create-config'
 import createKarmaServer from './karma/create-server'
 import * as logger from '../../utils/logger'
@@ -11,7 +11,7 @@ import { bullet, arrowRight } from '../../utils/figures'
 import { isEmpty } from 'redash'
 
 export type Mocks = { [key: string]: string }
-export type RunOpts = DevServerOpts
+export type StartOpts = DevServerOpts
 export type TestOpts = {
   mocks: Mocks,
   react: boolean,
@@ -57,8 +57,11 @@ class WebAppCompiler implements ICompiler {
   /**
    * Starts the development server for the web application.
    */
-  async start (opts?: Partial<RunOpts>) {
-    return await new WebpackDevServer(this.config, opts).start()
+  async start (opts?: Partial<StartOpts>): Promise<DevServer> {
+    const server = new DevServer(this.config, opts).start()
+
+    await server.start()
+    return server
   }
 
   /**
