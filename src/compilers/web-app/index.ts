@@ -59,7 +59,7 @@ class WebAppCompiler implements ICompiler {
    * Starts the development server for the web application.
    */
   async start (opts?: Partial<StartOpts>): Promise<DevServer> {
-    const server = new DevServer(this.config, opts).start()
+    const server = new DevServer(this.config, opts)
 
     await server.start()
     return server
