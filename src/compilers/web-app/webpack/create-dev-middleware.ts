@@ -14,17 +14,15 @@ export type CreateDevMiddlewareOpts = {
 }
 const createDevMiddleware = (webpackConfig: any, opts: CreateDevMiddlewareOpts): Array<Middleware> => {
   webpackConfig.output.publicPath = `${opts.protocol}://${opts.host}:${opts.port}/`
-    webpackConfig.entry.main.unshift(
-      findGenesisDependency('webpack-hot-middleware/client.js') +
-      `?path=${webpackConfig.output.publicPath}__webpack_hmr`
-    )
-    webpackConfig.entry.main.unshift(
-      findGenesisDependency('react-error-overlay'),
-    )
-    webpackConfig.plugins.push(
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.NamedModulesPlugin()
-    )
+  webpackConfig.entry.main.unshift(
+    findGenesisDependency('react-error-overlay'),
+    findGenesisDependency('webpack-hot-middleware/client.js') +
+    `?path=${webpackConfig.output.publicPath}__webpack_hmr`,
+  )
+  webpackConfig.plugins.push(
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin()
+  )
 
   const webpackCompiler = webpack(webpackConfig)
   const devMiddleware = webpackDevMiddleware(webpackCompiler, {
