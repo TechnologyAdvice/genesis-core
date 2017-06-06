@@ -87,7 +87,6 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     }],
   })
 
-
   config.module.rules.push({
     test: /\.(ts|tsx)$/,
     exclude: /node_modules/,
@@ -134,7 +133,6 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
 
   config.module.rules.push({
     test: /\.(css)$/,
-    exclude: /node_modules/,
     loader: extractStyles.extract({
       fallback: findGenesisDependency('style-loader'),
       use: [
@@ -142,9 +140,9 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       ],
     })
   })
+
   config.module.rules.push({
     test: /\.(sass|scss)$/,
-    exclude: /node_modules/,
     loader: extractStyles.extract({
       fallback: findGenesisDependency('style-loader'),
       use: [
