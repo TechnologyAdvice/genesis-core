@@ -33,6 +33,9 @@ const createDevMiddleware = (webpackConfig: any, opts: CreateDevMiddlewareOpts):
   })
   const hotMiddleware = webpackHotMiddleware(webpackCompiler, {
     log: () => {}, // disable logging
+    // Heart beats >=5s timeout on the express server when using node v8
+    // https://github.com/glenjamin/webpack-hot-middleware/issues/210
+    heartbeat: 2500,
   })
 
   const middleware = [devMiddleware, hotMiddleware, require('react-error-overlay/middleware')()]
