@@ -2,15 +2,7 @@ import * as chalk from 'chalk'
 import * as figures from './figures'
 
 export const timestamp = () => {
-  const timestamp = new Date().toLocaleDateString(undefined, {
-    year   : '2-digit',
-    month  : '2-digit',
-    day    : '2-digit',
-    hour   : '2-digit',
-    minute : '2-digit',
-    second : '2-digit',
-  }).split(', ')[1]
-  return `[${timestamp}]`
+  return `[${new Date().toLocaleTimeString(undefined, { hour12: false })}]`
 }
 
 export const log = (...messages: Array<any>) => {
