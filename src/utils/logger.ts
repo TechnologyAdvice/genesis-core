@@ -1,27 +1,16 @@
 import * as chalk from 'chalk'
 import * as figures from './figures'
 
-// HACK: disable annoying loaderUtils warning
-// TODO(zuko): remove this when fixed
-;(() => {
-  const reportError = console.error.bind(console)
-  const ignore = /https\:\/\/github\.com\/webpack\/loader-utils\/issues\/56/
-  console.error = (...args: Array<any>) => {
-    if (ignore.test(args[0])) return
-    return reportError(...args)
-  }
-})()
-
 export const timestamp = () => {
   const timestamp = new Date().toLocaleDateString(undefined, {
-    year: '2-digit',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  })
-  return `[${timestamp.split(', ')[1]}]`
+    year   : '2-digit',
+    month  : '2-digit',
+    day    : '2-digit',
+    hour   : '2-digit',
+    minute : '2-digit',
+    second : '2-digit',
+  }).split(', ')[1]
+  return `[${timestamp}]`
 }
 
 export const log = (...messages: Array<any>) => {

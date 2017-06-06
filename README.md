@@ -14,11 +14,7 @@ Take advantage of the modern JavaScript ecosystem without any of the headache. G
 ## Installation
 
 ```bash
-# For Yarn users (recommended)
-yarn add @technologyadvice/genesis-core
-
-# For NPM users
-npm install --save @technologyadvice/genesis-core
+$ npm install --save-dev @technologyadvice/genesis-core
 ```
 
 ## Targets
@@ -26,6 +22,8 @@ npm install --save @technologyadvice/genesis-core
 * [NPM Package](#npm-package)
 
 ### Web App
+
+This compiler is still in progress.
 
 ### NPM Package
 
@@ -39,27 +37,27 @@ This compiler is still in progress.
   env          : Environment,
   /** The full path to the project's root directory */
   basePath     : string,
-  /** The name of the directory containing the project's source code */
+  /** The name of the project's source code directory */
   srcDir       : string,
   /** The name of the directory in which to emit compiled code */
   outDir       : string
-  /** The file name of the project's main entry point (defaults to main.js) */
+  /** The file name of the project's main entry point. Defaults to main.{js,ts} */
   main         : string,
   /** The full path to the HTML template to use with the project */
   templatePath : string | null,
-  /** The base path for all projects assets (relative to the root) */
+  /** The base path for all projects assets (relative to the document root) */
   publicPath   : string,
-  /** A hash map of keys that the compiler should treat as external to the project */
-  externals    : Object,
+  /** A hash map of modules to replace with external global references */
+  externals    : { [key: string]: string },
   /** A hash map of variables and their values to expose globally */
-  globals      : Object,
+  globals      : { [key: string]: any },
   /** The list of modules to compile separately from the core project code */
   vendors      : Array<string>,
   /** Whether to run the compiler with verbose logging */
   verbose      : boolean,
   /** Whether to generate sourcemaps */
   sourcemaps   : boolean,
-  /** TypeScript configuration */
+  /** TypeScript-specific configuration */
   typescript   : {
     /** The full path to the tsconfig.json file to use */
     configPath : string | null,

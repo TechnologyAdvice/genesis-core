@@ -11,21 +11,16 @@ import { bullet, arrowRight } from '../../utils/figures'
 import { isEmpty } from 'redash'
 
 export type Mocks = { [key: string]: string }
-export type StartOpts = DevServerOpts
-export type TestOpts = {
-  mocks: Mocks,
-  react: boolean,
-  watch: boolean,
-}
+
 class WebAppCompiler implements ICompiler {
-  public config: ICompilerConfig
+  private config: ICompilerConfig
 
   constructor (config: ICompilerConfig) {
     this.config = config
   }
 
   /**
-   * Initializes a new application in the current directory
+   * Initializes a new application in the current directory.
    */
   async init (): Promise<void> {
     const ncp = require('ncp').ncp
@@ -58,7 +53,7 @@ class WebAppCompiler implements ICompiler {
   /**
    * Starts the development server for the web application.
    */
-  async start (opts?: Partial<StartOpts>): Promise<DevServer> {
+  async start (opts?: Partial<DevServerOpts>): Promise<DevServer> {
     const server = new DevServer(this.config, opts)
 
     await server.start()
@@ -81,12 +76,24 @@ class WebAppCompiler implements ICompiler {
   }
 
   /**
-   * Starts the test runner. Can be run in watch mode to stay running and
-   * automatically rerun tests when changes are detected.
+   * Starts the test runner. Can be run in watch mode to automatically
+   * rerun tests when changes are detected.
    */
-  async test (opts: Partial<TestOpts> = { react: true }) {
-    logger.info('Enforcing environment: ' + chalk.bold('test'))
-    const config = Object.assign({}, this.config, { env: 'test' })
+  async test (
+    opts: Partial<{
+      mocks: Mocks,
+      react: boolean,
+      watch: boolean,
+    }> = {
+      mocks: {},
+      react: true,
+      watch: false
+    }
+  ) {
+    const config: ICompilerConfig = {
+      ...this.config,
+      env: 'test',
+    }
     const webpackConfig = createWebpackConfig(config)
 
     if (!isEmpty(opts.mocks)) {

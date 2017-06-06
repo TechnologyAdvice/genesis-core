@@ -1,7 +1,7 @@
 {
   "name": "@technologyadvice/genesis-core",
   "version": "0.3.3",
-  "description": "Where it all begins",
+  "description": "Simplified build tooling for a complected world",
   "main": "dist/index.js",
   "repository": "https://github.com/technologyadvice/genesis-core",
   "author": "TechnologyAdvice",

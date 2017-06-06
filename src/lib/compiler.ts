@@ -4,7 +4,13 @@ export type Environment =
 | 'test'
 | 'production'
 
+export type ProjectType =
+  'web-app'
+| 'library'
+
 export interface ICompilerConfig {
+  /** The type of project you are building {web-app, library} */
+  projectType  : ProjectType,
   /** The environment to use when building the project */
   env          : Environment,
   /** The full path to the project's root directory */

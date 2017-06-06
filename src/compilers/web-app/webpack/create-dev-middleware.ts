@@ -32,7 +32,7 @@ const createDevMiddleware = (webpackConfig: any, opts: CreateDevMiddlewareOpts):
     stats: 'none',
   })
   const hotMiddleware = webpackHotMiddleware(webpackCompiler, {
-    log: () => {},
+    log: () => {}, // disable logging
   })
 
   const middleware = [devMiddleware, hotMiddleware, require('react-error-overlay/middleware')()]

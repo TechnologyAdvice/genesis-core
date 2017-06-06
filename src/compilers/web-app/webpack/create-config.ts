@@ -19,6 +19,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         inProjectSrc(opts.main),
       ],
     } as any,
+    target: 'web',
     devtool: opts.sourcemaps ? 'source-map' : false,
     performance: {
       hints: false,

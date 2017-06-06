@@ -39,7 +39,7 @@ class DevServer {
   }
 
   _onCompilerStart () {
-    logger.info('Change detected; starting compiler...')
+    logger.info('Change detected, recompiling...')
   }
 
   _onCompilerFinish (stats: any) {
@@ -58,11 +58,12 @@ class DevServer {
     }
   }
 
-  start () {
-    return this._server.start()
+  async start () {
+    await this._server.start()
+    return
   }
 
-  stop () {
+  async stop () {
     this._server.close()
   }
 }
