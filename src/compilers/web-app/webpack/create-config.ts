@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as webpack from 'webpack'
 import * as HtmlWebpackPlugin from 'html-webpack-plugin'
 import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
-import { findGenesisDependency } from '../../../utils/paths'
+import { resolveGenesisDependency } from '../../../utils/paths'
 
 export default function createWebpackConfig (opts: ICompilerConfig) {
   const inProject = (...paths: Array<string>) => path.resolve(opts.basePath, ...paths)
@@ -52,14 +52,14 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     test: /\.js$/,
     exclude: /node_modules/,
     use: [{
-      loader: findGenesisDependency('babel-loader'),
+      loader: resolveGenesisDependency('babel-loader'),
       query: {
         cacheDirectory: true,
         plugins: [
-          findGenesisDependency('babel-plugin-transform-class-properties'),
-          findGenesisDependency('babel-plugin-syntax-dynamic-import'),
+          resolveGenesisDependency('babel-plugin-transform-class-properties'),
+          resolveGenesisDependency('babel-plugin-syntax-dynamic-import'),
           [
-            findGenesisDependency('babel-plugin-transform-runtime'),
+            resolveGenesisDependency('babel-plugin-transform-runtime'),
             {
               helpers: true,
               polyfill: false,
@@ -67,15 +67,15 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
             },
           ],
           [
-            findGenesisDependency('babel-plugin-transform-object-rest-spread'),
+            resolveGenesisDependency('babel-plugin-transform-object-rest-spread'),
             {
               usBuiltIns: true,
             },
           ]
         ],
         presets: [
-          findGenesisDependency('babel-preset-react'),
-          [findGenesisDependency('babel-preset-env'), {
+          resolveGenesisDependency('babel-preset-react'),
+          [resolveGenesisDependency('babel-preset-env'), {
             targets: {
               ie9: true,
               uglify: true,
@@ -91,7 +91,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     test: /\.(ts|tsx)$/,
     exclude: /node_modules/,
     use: [{
-      loader: findGenesisDependency('awesome-typescript-loader'),
+      loader: resolveGenesisDependency('awesome-typescript-loader'),
       query: {
         useCache: true,
         configFileName: opts.typescript.configPath,
@@ -104,7 +104,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   // Styles
   // ------------------------------------
   const cssLoader = {
-    loader: findGenesisDependency('css-loader'),
+    loader: resolveGenesisDependency('css-loader'),
     options: {
       sourceMap: opts.sourcemaps,
       minimize: {
@@ -114,7 +114,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
           browsers: ['last 2 versions'],
         },
         discardComments: {
-          removeAll : true,
+          removeAll: true,
         },
         discardUnused: false,
         mergeIdents: false,
@@ -134,7 +134,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   config.module.rules.push({
     test: /\.(css)$/,
     loader: extractStyles.extract({
-      fallback: findGenesisDependency('style-loader'),
+      fallback: resolveGenesisDependency('style-loader'),
       use: [
         cssLoader,
       ],
@@ -144,11 +144,11 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   config.module.rules.push({
     test: /\.(sass|scss)$/,
     loader: extractStyles.extract({
-      fallback: findGenesisDependency('style-loader'),
+      fallback: resolveGenesisDependency('style-loader'),
       use: [
         cssLoader,
         {
-          loader: findGenesisDependency('sass-loader'),
+          loader: resolveGenesisDependency('sass-loader'),
           options: {
             sourceMap: opts.sourcemaps,
             includePaths: [
@@ -174,12 +174,12 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   // Fonts
   // ------------------------------------
   const FONT_TYPES = new Map([
-    ['woff', 'application/font-woff'],
+    ['woff',  'application/font-woff'],
     ['woff2', 'application/font-woff2'],
-    ['otf', 'font/opentype'],
-    ['ttf', 'application/octet-stream'],
-    ['eot', 'application/vnd.ms-fontobject'],
-    ['svg', 'image/svg+xml'],
+    ['otf',   'font/opentype'],
+    ['ttf',   'application/octet-stream'],
+    ['eot',   'application/vnd.ms-fontobject'],
+    ['svg',   'image/svg+xml'],
   ])
   for (let [extension, mimetype] of FONT_TYPES) {
     config.module.rules.push({
@@ -204,7 +204,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     },
   }
   // HtmlWebpackPlugin doesn't work if `template` is undefined or null, so
-  // we have to explicitly delete the key when it's undefined.
+  // we have to explicitly delete the key when it's not defined.
   if (!htmlWebpackPluginOpts.template) {
     delete htmlWebpackPluginOpts.template
   }

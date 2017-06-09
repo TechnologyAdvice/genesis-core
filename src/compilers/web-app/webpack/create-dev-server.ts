@@ -7,23 +7,23 @@ import createDevMiddleware, { CreateDevMiddlewareOpts } from './create-dev-middl
 import * as logger from '../../../utils/logger'
 
 export interface DevServerOpts {
-  protocol: string,
+  protocol: 'http' | 'https',
   host: string,
   port: number,
 }
 class DevServer {
-  _server: any
+  private _server: any
 
-  constructor (config: ICompilerConfig, overrides?: Partial<DevServerOpts>) {
-    const defaults: CreateDevMiddlewareOpts = {
+  constructor (config: ICompilerConfig, options?: Partial<DevServerOpts>) {
+    const opts: CreateDevMiddlewareOpts = {
       protocol: 'http',
       host: 'localhost',
       port: 3000,
       contentBase: path.resolve(config.basePath, config.srcDir),
       onCompilerFinish: this._onCompilerFinish.bind(this),
       onCompilerStart: this._onCompilerStart.bind(this),
+      ...options,
     }
-    const opts: CreateDevMiddlewareOpts = Object.assign(defaults, overrides)
 
     this._server = express()
     this._server.use(require('connect-history-api-fallback')())
@@ -31,8 +31,8 @@ class DevServer {
     this._server.use(express.static(path.resolve(config.basePath, 'public')))
     this._server.start = () => new Promise(resolve => {
       this._server.listen(opts.port, opts.host, () => {
-        logger.info(chalk.bold(`Development server started on http://${opts.host}:${opts.port}.`))
         logger.info('Starting compiler...')
+        logger.info(chalk.bold(`Development running at ${opts.protocol}://${opts.host}:${opts.port}.`))
         resolve()
       })
     })
@@ -60,7 +60,6 @@ class DevServer {
 
   async start () {
     await this._server.start()
-    return
   }
 
   async stop () {

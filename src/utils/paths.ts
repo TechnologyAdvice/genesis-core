@@ -1,9 +1,7 @@
 import * as path from 'path'
 
-export const findGenesisFile = (target: string): string =>
+export const resolveGenesisPath = (target: string): string =>
   path.resolve(__dirname, '../../' + target)
 
-export const findGenesisDependency = (target: string): string | never => {
-  const [filepath, query = ''] = target.split('?')
-  return require.resolve(filepath) + (query ? '?query' : '')
-}
+export const resolveGenesisDependency = (target: string): string =>
+  require.resolve(target)

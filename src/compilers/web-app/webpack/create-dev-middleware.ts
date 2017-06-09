@@ -1,11 +1,11 @@
 import * as webpack from 'webpack'
 import * as webpackDevMiddleware from 'webpack-dev-middleware'
 import * as webpackHotMiddleware from 'webpack-hot-middleware'
-import { findGenesisDependency } from '../../../utils/paths'
+import { resolveGenesisDependency } from '../../../utils/paths'
 
 export type Middleware = any
 export type CreateDevMiddlewareOpts = {
-  protocol: string,
+  protocol: 'http' | 'https',
   host: string,
   port: number,
   contentBase: string,
@@ -15,8 +15,8 @@ export type CreateDevMiddlewareOpts = {
 const createDevMiddleware = (webpackConfig: any, opts: CreateDevMiddlewareOpts): Array<Middleware> => {
   webpackConfig.output.publicPath = `${opts.protocol}://${opts.host}:${opts.port}/`
   webpackConfig.entry.main.unshift(
-    findGenesisDependency('react-error-overlay'),
-    findGenesisDependency('webpack-hot-middleware/client.js') +
+    resolveGenesisDependency('react-error-overlay'),
+    resolveGenesisDependency('webpack-hot-middleware/client.js') +
     `?path=${webpackConfig.output.publicPath}__webpack_hmr`,
   )
   webpackConfig.plugins.push(
