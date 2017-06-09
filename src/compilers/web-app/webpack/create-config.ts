@@ -2,6 +2,8 @@ import { ICompilerConfig } from '../../../lib/compiler'
 import * as path from 'path'
 import * as webpack from 'webpack'
 import * as HtmlWebpackPlugin from 'html-webpack-plugin'
+// TODO: make tsified
+const WebpackManifestPlugin = require('webpack-manifest-plugin')
 import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { resolveGenesisDependency } from '../../../utils/paths'
 
@@ -37,6 +39,9 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       rules: [] as Array<any>,
     },
     plugins: [
+      new WebpackManifestPlugin({
+        fileName: 'asset-manifest.json',
+      }),
       new webpack.DefinePlugin(Object.assign({
         'process.env': { NODE_ENV: JSON.stringify(opts.env) },
         __DEV__,

@@ -61,7 +61,8 @@
     "url-loader": "^0.5.8",
     "webpack": "^2.6.1",
     "webpack-dev-middleware": "^1.8.4",
-    "webpack-hot-middleware": "^2.13.2"
+    "webpack-hot-middleware": "^2.13.2",
+    "webpack-manifest-plugin": "^1.1.0"
   },
   "devDependencies": {
     "@types/chalk": "^0.4.31",
