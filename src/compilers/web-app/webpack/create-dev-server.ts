@@ -32,7 +32,7 @@ class DevServer {
     this._server.start = () => new Promise(resolve => {
       this._server.listen(opts.port, opts.host, () => {
         logger.info('Starting compiler...')
-        logger.info(chalk.bold(`Development running at ${opts.protocol}://${opts.host}:${opts.port}.`))
+        logger.info(chalk.bold(`Development running at ${opts.protocol}://${opts.host}:${opts.port}`))
         resolve()
       })
     })
