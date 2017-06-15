@@ -55,7 +55,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   // ------------------------------------
   config.module.rules.push({
     test: /\.js$/,
-    exclude: /node_modules/,
+    exclude: /node_modules\/(?!@technologyadvice\/genesis-core\/src)/,
     use: [{
       loader: resolveGenesisDependency('babel-loader'),
       query: {
