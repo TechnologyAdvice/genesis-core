@@ -1,4 +1,4 @@
-import { ICompilerConfig } from '../../../lib/compiler'
+import { ICompilerConfig } from '../../../types'
 import * as path from 'path'
 import * as express from 'express'
 import * as chalk from 'chalk'

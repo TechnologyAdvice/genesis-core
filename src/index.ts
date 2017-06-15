@@ -1,4 +1,4 @@
-import { ICompiler, ICompilerConfig } from './lib/compiler'
+import { ICompiler, ICompilerConfig } from './types'
 import WebAppCompiler from './compilers/web-app'
 import * as logger from './utils/logger'
 

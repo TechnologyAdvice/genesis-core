@@ -1,4 +1,4 @@
-import { ICompilerConfig } from '../../../lib/compiler'
+import { ICompilerConfig } from '../../../types'
 import * as path from 'path'
 import * as webpack from 'webpack'
 import * as HtmlWebpackPlugin from 'html-webpack-plugin'

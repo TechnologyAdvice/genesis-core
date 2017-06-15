@@ -1,7 +1,7 @@
 import * as webpack from 'webpack'
 import * as chalk from 'chalk'
 import * as path from 'path'
-import { ICompiler, ICompilerConfig } from '../../lib/compiler'
+import { ICompiler, ICompilerConfig } from '../../types'
 import createWebpackConfig from './webpack/create-config'
 import DevServer, { DevServerOpts } from './webpack/create-dev-server'
 import createKarmaConfig from './karma/create-config'
