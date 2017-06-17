@@ -26,8 +26,8 @@ if (__REACT__) {
   global.mount = enzyme.mount
 }
 
-chai.use(dirtyChai)
 chai.use(chaiAsPromised)
+chai.use(dirtyChai)
 chai.use(sinonChai)
 
 // Sinon Sandbox
