@@ -203,6 +203,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   const htmlWebpackPluginOpts = {
     title: 'Genesis Application',
     inject: true,
+    chunksSortMode: 'dependency' as any,
     template: opts.templatePath || undefined,
     minify: {
       collapseWhitespace: true,
