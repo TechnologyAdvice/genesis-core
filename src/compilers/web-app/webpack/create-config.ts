@@ -33,6 +33,9 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     },
     resolve: {
       extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
+      alias: {
+        '~': inProject(opts.srcDir),
+      },
     },
     externals: opts.externals,
     module: {

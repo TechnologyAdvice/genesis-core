@@ -98,7 +98,13 @@ class WebAppCompiler implements ICompiler {
 
     if (!isEmpty(opts.mocks)) {
       this._printMockedModules(opts.mocks!)
-      webpackConfig.resolve = { ...webpackConfig.resolve, alias: opts.mocks }
+      webpackConfig.resolve = {
+        ...webpackConfig.resolve,
+        alias: {
+          ...webpackConfig.resolve.alias,
+          ...opts.mocks,
+        }
+      }
     }
     const karmaConfig = createKarmaConfig(webpackConfig, {
       basePath: this.config.basePath,
