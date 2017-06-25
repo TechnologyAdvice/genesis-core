@@ -2,10 +2,9 @@ import { ICompilerConfig } from '../../../types'
 import * as path from 'path'
 import * as webpack from 'webpack'
 import * as HtmlWebpackPlugin from 'html-webpack-plugin'
-// TODO: make tsified
-const WebpackManifestPlugin = require('webpack-manifest-plugin')
 import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { resolveGenesisDependency } from '../../../utils/paths'
+const WebpackManifestPlugin = require('webpack-manifest-plugin')
 
 export default function createWebpackConfig (opts: ICompilerConfig) {
   const inProject = (...paths: Array<string>) => path.resolve(opts.basePath, ...paths)
@@ -51,6 +50,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         __TEST__,
         __PROD__,
       }, opts.globals)),
+      new webpack.optimize.ModuleConcatenationPlugin(),
     ],
   }
 
@@ -234,12 +234,14 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   // Production Optimizations
   // ------------------------------------
   if (__PROD__) {
+    const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+
     config.plugins.push(
       new webpack.LoaderOptionsPlugin({
         minimize: true,
         debug: false,
       }),
-      new webpack.optimize.UglifyJsPlugin({
+      new UglifyJsPlugin({
         sourceMap: !!config.devtool,
         comments: false,
         compress: {
