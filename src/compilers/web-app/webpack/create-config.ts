@@ -50,7 +50,6 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         __TEST__,
         __PROD__,
       }, opts.globals)),
-      new webpack.optimize.ModuleConcatenationPlugin(),
     ],
   }
 
@@ -237,6 +236,11 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
     config.plugins.push(
+      // TODO(zuko): consider applying this plugin all the time so that bundles
+      // are more consistent between development and production. There are
+      // currently slowdowns caused by the early webpack@^3.0.0 release which make
+      // this unsuitable for watch mode.
+      new webpack.optimize.ModuleConcatenationPlugin(),
       new webpack.LoaderOptionsPlugin({
         minimize: true,
         debug: false,
