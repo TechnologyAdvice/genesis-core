@@ -84,12 +84,14 @@ class WebAppCompiler implements ICompiler {
       mocks: Mocks,
       react: boolean,
       watch: boolean,
-    }> = {
+    }>
+  ) {
+    opts = {
       mocks: {},
       react: true,
-      watch: false
+      watch: false,
+      ...opts,
     }
-  ) {
     const config: ICompilerConfig = {
       ...this.config,
       env: 'test',
