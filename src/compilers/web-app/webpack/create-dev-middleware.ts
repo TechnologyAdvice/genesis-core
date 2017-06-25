@@ -30,6 +30,9 @@ const createDevMiddleware = (webpackConfig: any, opts: CreateDevMiddlewareOpts):
     noInfo: true,
     publicPath: webpackConfig.output.publicPath,
     stats: 'none',
+    watchOptions: {
+      ignored: /node_modules/,
+    },
   })
   const hotMiddleware = webpackHotMiddleware(webpackCompiler, {
     log: () => {}, // disable logging
