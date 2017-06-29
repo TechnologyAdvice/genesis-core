@@ -8,7 +8,6 @@ import * as logger from '../../../utils/logger'
 
 export interface DevServerOpts {
   protocol: 'http' | 'https',
-  host: string,
   port: number,
 }
 class DevServer {
@@ -30,7 +29,7 @@ class DevServer {
     this._server.use(createDevMiddleware(createWebpackConfig(config), opts))
     this._server.use(express.static(path.resolve(config.basePath, 'public')))
     this._server.start = () => new Promise(resolve => {
-      this._server.listen(opts.port, opts.host, () => {
+      this._server.listen(opts.port, () => {
         logger.info('Starting compiler...')
         logger.info(chalk.bold(`Development server running at ${opts.protocol}://${opts.host}:${opts.port}`))
         resolve()
