@@ -25,6 +25,11 @@ class DevServer {
     }
 
     this._server = express()
+    this._server.use(function (req: any, res: any, next: Function) {
+      res.header('Access-Control-Allow-Origin', '*')
+      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+      next()
+    });
     this._server.use(require('connect-history-api-fallback')())
     this._server.use(createDevMiddleware(createWebpackConfig(config), opts))
     this._server.use(express.static(path.resolve(config.basePath, 'public')))
