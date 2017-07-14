@@ -43,7 +43,12 @@ class WebAppCompiler implements ICompiler {
     const compile = () => new Promise((resolve, reject) => {
       const compiler = webpack(createWebpackConfig(this.config) as any)
       compiler.run((err, stats) => {
-        if (err) reject(err)
+        if (err) return reject(err)
+
+        const jsonStats = stats.toJson()
+        if (jsonStats.errors.length) {
+          return reject(new Error('Compiler encountered build errors'))
+        }
         else resolve(stats)
       })
     })
