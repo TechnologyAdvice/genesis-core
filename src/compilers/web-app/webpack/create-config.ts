@@ -101,6 +101,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       query: {
         useCache: true,
         configFileName: opts.typescript.configPath,
+        transpileOnly: __TEST__,
         useBabel: false,
         silent: true,
       },

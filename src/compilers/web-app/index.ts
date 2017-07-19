@@ -4,8 +4,6 @@ import * as path from 'path'
 import { ICompiler, ICompilerConfig } from '../../types'
 import createWebpackConfig from './webpack/create-config'
 import DevServer, { DevServerOpts } from './webpack/create-dev-server'
-import createKarmaConfig from './karma/create-config'
-import createKarmaServer from './karma/create-server'
 import * as logger from '../../utils/logger'
 import { bullet, arrowRight } from '../../utils/figures'
 import { isEmpty } from 'redash'
@@ -85,15 +83,10 @@ class WebAppCompiler implements ICompiler {
    * rerun tests when changes are detected.
    */
   async test (
-    opts: Partial<{
-      mocks: Mocks,
-      react: boolean,
-      watch: boolean,
-    }>
+    opts: Partial<{ mocks: Mocks, watch: boolean }>
   ) {
     opts = {
       mocks: {},
-      react: true,
       watch: false,
       ...opts,
     }
@@ -102,7 +95,6 @@ class WebAppCompiler implements ICompiler {
       env: 'test',
     }
     const webpackConfig = createWebpackConfig(config)
-
     if (!isEmpty(opts.mocks)) {
       this._printMockedModules(opts.mocks!)
       webpackConfig.resolve = {
@@ -113,13 +105,16 @@ class WebAppCompiler implements ICompiler {
         }
       }
     }
-    const karmaConfig = createKarmaConfig(webpackConfig, {
-      basePath: this.config.basePath,
-      react: opts.react,
-      watch: !!opts.watch,
-    })
-    logger.info('Starting test runner...')
-    return await createKarmaServer(karmaConfig).start()
+    const createMochaWebpackSuite = require('../../lib/test-runners/mocha-webpack').default
+    const testRunner = createMochaWebpackSuite({
+      basePath: config.basePath,
+    }, webpackConfig)
+
+    logger.info('Starting test runner...', testRunner)
+
+    // TODO(zuko): would like to not explicitly exit the process here.
+    const exitCode = await (opts.watch ? testRunner.watch() : testRunner.start())
+    process.exit(exitCode)
   }
 }
 

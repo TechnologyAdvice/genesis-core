@@ -3,10 +3,11 @@ import sinon from 'sinon'
 import dirtyChai from 'dirty-chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinonChai from 'sinon-chai'
+import * as enzyme from 'enzyme'
+import chaiEnzyme from 'chai-enzyme'
 
 // Mocha / Chai
 // ------------------------------------
-mocha.setup({ ui: 'bdd' })
 chai.should()
 
 global.chai = chai
@@ -15,24 +16,19 @@ global.sinon = sinon
 
 // Chai Plugins
 // ------------------------------------
-if (__REACT__) {
-  const enzyme = require('enzyme')
-  const chaiEnzyme = require('chai-enzyme')
-
-  chai.use(chaiEnzyme())
-  global.enzyme = enzyme
-  global.shallow = enzyme.shallow
-  global.render = enzyme.render
-  global.mount = enzyme.mount
-}
-
+chai.use(chaiEnzyme())
 chai.use(chaiAsPromised)
 chai.use(dirtyChai)
 chai.use(sinonChai)
 
+// Enzyme
+// ------------------------------------
+global.shallow = enzyme.shallow
+global.render = enzyme.render
+global.mount = enzyme.mount
+
 // Sinon Sandbox
 // ------------------------------------
 global.sandbox = sinon.sandbox.create()
-const stub = global.sandbox.stub.bind(global.sandbox)
 
 afterEach(() => global.sandbox.restore())
