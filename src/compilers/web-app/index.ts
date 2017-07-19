@@ -102,9 +102,7 @@ class WebAppCompiler implements ICompiler {
     const webpackConfig = createWebpackConfig(config)
     webpackConfig.devtool = 'inline-cheap-module-source-map'
     webpackConfig.target = 'node'
-    webpackConfig.externals = [
-      // require('webpack-node-externals')({ whitelist: [/semantic-ui-react/] }),
-    ] as any
+    webpackConfig.externals = [] as any
 
     if (!isEmpty(opts.mocks)) {
       this._printMockedModules(opts.mocks!)
@@ -119,14 +117,13 @@ class WebAppCompiler implements ICompiler {
     webpackConfig.plugins.push(
       new webpack.DefinePlugin({
         __TESTS_ROOT__: JSON.stringify(path.resolve(this.config.basePath, 'test')),
-        __TESTS_PATTERN__: /foo\.(spec|test)\.(js|ts|tsx)$/,
+        __TESTS_PATTERN__: /\.(spec|test)\.(js|ts|tsx)$/,
         __REACT__: !!opts.react,
       })
     )
     const createMochaWebpack = require('mocha-webpack/lib/createMochaWebpack')
     const mochaWebpack = createMochaWebpack()
     mochaWebpack.addEntry('/Users/zuko/projects/technologyadvice/genesis-core/suite.js')
-    mochaWebpack.addEntry('/Users/zuko/projects/technologyadvice/unity/test/foo.test.js')
     mochaWebpack.webpackConfig(webpackConfig)
     mochaWebpack.cwd(this.config.basePath)
     mochaWebpack.ui('bdd')

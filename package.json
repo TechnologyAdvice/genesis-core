@@ -46,9 +46,8 @@
     "mocha-webpack": "^1.0.0-rc.0",
     "ncp": "^2.0.0",
     "node-sass": "^4.5.3",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
     "react-error-overlay": "^1.0.7",
+    "react-test-renderer": "^15.5.4",
     "redash": "^0.21.1",
     "sass-loader": "^6.0.5",
     "sinon": "^2.3.2",
@@ -72,7 +71,6 @@
     "@types/webpack": "^3.0.0",
     "@types/webpack-dev-middleware": "^1.9.1",
     "@types/webpack-hot-middleware": "^2.15.0",
-    "react-test-renderer": "^15.5.4",
     "ta-scripts": "^2.5.2",
     "tslint": "^5.4.2",
     "typescript": "^2.3.4"

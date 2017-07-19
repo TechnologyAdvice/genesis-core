@@ -32,6 +32,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     },
     resolve: {
       modules: [
+        '.',
         '/Users/zuko/projects/technologyadvice/unity/node_modules',
         '/Users/zuko/projects/technologyadvice/genesis-core/node_modules',
       ],
