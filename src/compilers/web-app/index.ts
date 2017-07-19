@@ -45,6 +45,7 @@ class WebAppCompiler implements ICompiler {
 
         const jsonStats = stats.toJson()
         if (jsonStats.errors.length) {
+          jsonStats.errors.forEach(logger.error)
           return reject(new Error('Compiler encountered build errors'))
         }
         else resolve(stats)
