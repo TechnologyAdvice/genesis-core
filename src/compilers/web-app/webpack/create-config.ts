@@ -31,6 +31,10 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       publicPath: opts.publicPath,
     },
     resolve: {
+      modules: [
+        '/Users/zuko/projects/technologyadvice/unity/node_modules',
+        '/Users/zuko/projects/technologyadvice/genesis-core/node_modules',
+      ],
       extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
       alias: {
         '~': inProject(opts.srcDir),
@@ -102,7 +106,8 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         useCache: true,
         configFileName: opts.typescript.configPath,
         useBabel: false,
-        silent: true,
+        transpileOnly: true,
+        // silent: true,
       },
     }],
   })

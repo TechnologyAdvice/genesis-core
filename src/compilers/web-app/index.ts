@@ -4,8 +4,6 @@ import * as path from 'path'
 import { ICompiler, ICompilerConfig } from '../../types'
 import createWebpackConfig from './webpack/create-config'
 import DevServer, { DevServerOpts } from './webpack/create-dev-server'
-import createKarmaConfig from './karma/create-config'
-import createKarmaServer from './karma/create-server'
 import * as logger from '../../utils/logger'
 import { bullet, arrowRight } from '../../utils/figures'
 import { isEmpty } from 'redash'
@@ -102,6 +100,11 @@ class WebAppCompiler implements ICompiler {
       env: 'test',
     }
     const webpackConfig = createWebpackConfig(config)
+    webpackConfig.devtool = 'inline-cheap-module-source-map'
+    webpackConfig.target = 'node'
+    webpackConfig.externals = [
+      // require('webpack-node-externals')({ whitelist: [/semantic-ui-react/] }),
+    ] as any
 
     if (!isEmpty(opts.mocks)) {
       this._printMockedModules(opts.mocks!)
@@ -113,13 +116,25 @@ class WebAppCompiler implements ICompiler {
         }
       }
     }
-    const karmaConfig = createKarmaConfig(webpackConfig, {
-      basePath: this.config.basePath,
-      react: opts.react,
-      watch: !!opts.watch,
-    })
+    webpackConfig.plugins.push(
+      new webpack.DefinePlugin({
+        __TESTS_ROOT__: JSON.stringify(path.resolve(this.config.basePath, 'test')),
+        __TESTS_PATTERN__: /foo\.(spec|test)\.(js|ts|tsx)$/,
+        __REACT__: !!opts.react,
+      })
+    )
+    const createMochaWebpack = require('mocha-webpack/lib/createMochaWebpack')
+    const mochaWebpack = createMochaWebpack()
+    mochaWebpack.addEntry('/Users/zuko/projects/technologyadvice/genesis-core/suite.js')
+    mochaWebpack.addEntry('/Users/zuko/projects/technologyadvice/unity/test/foo.test.js')
+    mochaWebpack.webpackConfig(webpackConfig)
+    mochaWebpack.cwd(this.config.basePath)
+    mochaWebpack.ui('bdd')
+    mochaWebpack.reporter('spec')
+    mochaWebpack.fullStackTrace()
+
     logger.info('Starting test runner...')
-    return await createKarmaServer(karmaConfig).start()
+    await mochaWebpack.watch()
   }
 }
 
