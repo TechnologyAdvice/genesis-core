@@ -83,6 +83,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         presets: [
           resolveGenesisDependency('babel-preset-react'),
           [resolveGenesisDependency('babel-preset-env'), {
+            modules: false,
             targets: {
               uglify: true,
               ie9: true,
