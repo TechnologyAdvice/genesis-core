@@ -84,9 +84,10 @@ class WebAppCompiler implements ICompiler {
    * rerun tests when changes are detected.
    */
   async test (
-    opts: Partial<{ mocks: Mocks, watch: boolean }>
+    opts: Partial<{ mocks: Mocks, watch: boolean, dir: string }>
   ) {
     opts = {
+      dir: 'test',
       mocks: {},
       watch: false,
       ...opts,
@@ -108,7 +109,7 @@ class WebAppCompiler implements ICompiler {
     }
     const createMochaWebpackSuite = require('../../lib/test-runners/mocha-webpack').default
     const testRunner = createMochaWebpackSuite({
-      basePath: config.basePath,
+      basePath: path.resolve(config.basePath, opts.dir),
     }, webpackConfig)
 
     logger.info('Starting test runner...', testRunner)
