@@ -6,37 +6,43 @@ import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { resolveGenesisDependency } from '../../../utils/paths'
 const WebpackManifestPlugin = require('webpack-manifest-plugin')
 
-export default function createWebpackConfig (opts: ICompilerConfig) {
-  const inProject = (...paths: Array<string>) => path.resolve(opts.basePath, ...paths)
-  const inProjectSrc = (file: string) => inProject(opts.srcDir, file)
+export default function createWebpackConfig (config: ICompilerConfig, opts: {
+  splitBundles: boolean,
+}) {
+  opts = {
+    splitBundles: true,
+    ...opts,
+  }
+  const inProject = (...paths: Array<string>) => path.resolve(config.basePath, ...paths)
+  const inProjectSrc = (file: string) => inProject(config.srcDir, file)
 
-  const __DEV__  = opts.env === 'development'
-  const __TEST__ = opts.env === 'test'
-  const __PROD__ = opts.env === 'production'
+  const __DEV__  = config.env === 'development'
+  const __TEST__ = config.env === 'test'
+  const __PROD__ = config.env === 'production'
 
-  const config = {
+  const webpackConfig = {
     entry: {
       main: [
-        inProjectSrc(opts.main),
+        inProjectSrc(config.main),
       ],
     } as any,
     target: 'web',
-    devtool: opts.sourcemaps ? 'source-map' : false,
+    devtool: config.sourcemaps ? 'source-map' : false,
     performance: {
       hints: false,
     },
     output: {
-      path: inProject(opts.outDir),
+      path: inProject(config.outDir),
       filename: __DEV__ ? '[name].js' : '[name].[chunkhash].js',
-      publicPath: opts.publicPath,
+      publicPath: config.publicPath,
     },
     resolve: {
       extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
       alias: {
-        '~': inProject(opts.srcDir),
+        '~': inProject(config.srcDir),
       },
     },
-    externals: opts.externals,
+    externals: config.externals,
     module: {
       rules: [] as Array<any>,
     },
@@ -45,17 +51,17 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         fileName: 'asset-manifest.json',
       }),
       new webpack.DefinePlugin(Object.assign({
-        'process.env': { NODE_ENV: JSON.stringify(opts.env) },
+        'process.env': { NODE_ENV: JSON.stringify(config.env) },
         __DEV__,
         __TEST__,
         __PROD__,
-      }, opts.globals)),
+      }, config.globals)),
     ],
   }
 
   // JavaScript
   // ------------------------------------
-  config.module.rules.push({
+  webpackConfig.module.rules.push({
     test: /\.js$/,
     exclude: /node_modules\/(?!@technologyadvice\/genesis-core\/src)/,
     use: [{
@@ -94,7 +100,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     }],
   })
 
-  config.module.rules.push({
+  webpackConfig.module.rules.push({
     test: /\.(ts|tsx)$/,
     exclude: /node_modules/,
     use: [{
@@ -113,7 +119,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   const cssLoader = {
     loader: resolveGenesisDependency('css-loader'),
     options: {
-      sourceMap: opts.sourcemaps,
+      sourceMap: config.sourcemaps,
       minimize: {
         autoprefixer: {
           add: true,
@@ -127,7 +133,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         mergeIdents: false,
         reduceIdents: false,
         safe: true,
-        sourcemap: opts.sourcemaps,
+        sourcemap: config.sourcemaps,
       },
     },
   }
@@ -138,7 +144,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     disable: __DEV__,
   })
 
-  config.module.rules.push({
+  webpackConfig.module.rules.push({
     test: /\.(css)$/,
     loader: extractStyles.extract({
       fallback: resolveGenesisDependency('style-loader'),
@@ -148,7 +154,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     })
   })
 
-  config.module.rules.push({
+  webpackConfig.module.rules.push({
     test: /\.(sass|scss)$/,
     loader: extractStyles.extract({
       fallback: resolveGenesisDependency('style-loader'),
@@ -157,7 +163,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         {
           loader: resolveGenesisDependency('sass-loader'),
           options: {
-            sourceMap: opts.sourcemaps,
+            sourceMap: config.sourcemaps,
             includePaths: [
               inProjectSrc('styles'),
             ],
@@ -166,11 +172,11 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       ],
     })
   })
-  config.plugins.push(extractStyles)
+  webpackConfig.plugins.push(extractStyles)
 
   // Images
   // ------------------------------------
-  config.module.rules.push({
+  webpackConfig.module.rules.push({
     test    : /\.(png|jpg|gif)$/,
     loader  : 'url-loader',
     options : {
@@ -189,7 +195,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     ['svg',   'image/svg+xml'],
   ])
   for (let [extension, mimetype] of FONT_TYPES) {
-    config.module.rules.push({
+    webpackConfig.module.rules.push({
       test    : new RegExp(`\\.${extension}$`),
       loader  : 'url-loader',
       options : {
@@ -206,7 +212,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
     title: 'Genesis Application',
     inject: true,
     chunksSortMode: 'dependency' as any,
-    template: opts.templatePath || undefined,
+    template: config.templatePath || undefined,
     minify: {
       collapseWhitespace: true,
     },
@@ -216,18 +222,18 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   if (!htmlWebpackPluginOpts.template) {
     delete htmlWebpackPluginOpts.template
   }
-  config.plugins.push(new HtmlWebpackPlugin(htmlWebpackPluginOpts))
+  webpackConfig.plugins.push(new HtmlWebpackPlugin(htmlWebpackPluginOpts))
 
   // Bundle Splitting
   // ------------------------------------
-  if (!__TEST__) {
+  if (opts.splitBundles) {
     const bundles = ['manifest']
 
-    if (opts.vendors && opts.vendors.length) {
+    if (config.vendors && config.vendors.length) {
       bundles.unshift('vendor')
-      config.entry.vendor = opts.vendors
+      webpackConfig.entry.vendor = config.vendors
     }
-    config.plugins.push(new webpack.optimize.CommonsChunkPlugin({ names: bundles }))
+    webpackConfig.plugins.push(new webpack.optimize.CommonsChunkPlugin({ names: bundles }))
   }
 
   // Production Optimizations
@@ -235,7 +241,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
   if (__PROD__) {
     const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
-    config.plugins.push(
+    webpackConfig.plugins.push(
       // TODO(zuko): consider applying this plugin all the time so that bundles
       // are more consistent between development and production. There are
       // currently slowdowns caused by the early webpack@^3.0.0 release which make
@@ -246,7 +252,7 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
         debug: false,
       }),
       new UglifyJsPlugin({
-        sourceMap: !!config.devtool,
+        sourceMap: config.sourcemaps,
         comments: false,
         compress: {
           warnings: false,
@@ -263,5 +269,5 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       })
     )
   }
-  return config
+  return webpackConfig
 }

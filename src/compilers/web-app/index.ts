@@ -20,9 +20,12 @@ class WebAppCompiler implements ICompiler {
   /**
    * Builds the application to disk.
    */
-  async build () {
+  async build (opts = {}) {
     const compile = () => new Promise((resolve, reject) => {
-      const compiler = webpack(createWebpackConfig(this.config) as any)
+      const compiler = webpack(createWebpackConfig(this.config, {
+        splitBundles: true,
+        ...opts,
+      }) as any)
       compiler.run((err, stats) => {
         if (err) return reject(err)
 
@@ -79,7 +82,9 @@ class WebAppCompiler implements ICompiler {
       ...this.config,
       env: 'test',
     }
-    const webpackConfig = createWebpackConfig(config)
+    const webpackConfig = createWebpackConfig(config, {
+      splitBundles: false,
+    })
     if (!isEmpty(opts.mocks)) {
       this._printMockedModules(opts.mocks!)
       webpackConfig.resolve = {
