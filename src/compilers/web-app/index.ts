@@ -107,7 +107,7 @@ class WebAppCompiler implements ICompiler {
         }
       }
     }
-    const createMochaWebpackSuite = require('../../lib/test-runners/mocha-webpack').default
+    const createMochaWebpackSuite = require('../test-runners/mocha-webpack').default
     const testRunner = createMochaWebpackSuite({
       basePath: path.resolve(config.basePath, opts.dir),
     }, webpackConfig)

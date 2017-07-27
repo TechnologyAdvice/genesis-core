@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { resolveGenesisPath } from '../../utils/paths'
+import { resolveGenesisPath } from '../utils/paths'
 const globby = require('globby')
 
 export default function createMochaWebpackTestRunner (opts: any, webpackConfig: any) {
