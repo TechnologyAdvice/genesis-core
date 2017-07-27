@@ -45,7 +45,6 @@
     "jsdom": "^11.1.0",
     "mocha": "^3.4.2",
     "mocha-webpack": "1.0.0-rc.1",
-    "ncp": "^2.0.0",
     "node-sass": "^4.5.3",
     "react-addons-test-utils": "^15.5.1",
     "react-error-overlay": "^1.0.7",
