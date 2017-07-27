@@ -101,7 +101,6 @@ export default function createWebpackConfig (opts: ICompilerConfig) {
       loader: resolveGenesisDependency('awesome-typescript-loader'),
       query: {
         useCache: true,
-        configFileName: opts.typescript.configPath,
         transpileOnly: __TEST__,
         useBabel: false,
         silent: true,

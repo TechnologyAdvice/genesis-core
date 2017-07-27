@@ -38,11 +38,6 @@ export interface ICompilerConfig {
   verbose      : boolean,
   /** Whether to generate sourcemaps */
   sourcemaps   : boolean,
-  /** TypeScript-specific configuration */
-  typescript   : {
-    /** The full path to the tsconfig.json file to use */
-    configPath : string | null,
-  }
 }
 
 export interface ICompiler {

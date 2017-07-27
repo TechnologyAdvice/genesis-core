@@ -16,19 +16,12 @@ const COMPILER_DEFAULTS: ICompilerConfig = {
   vendors      : [],
   verbose      : false,
   sourcemaps   : true,
-  typescript   : {
-    configPath : null,
-  }
 }
 
 export default (opts: Partial<ICompilerConfig>): ICompiler => {
   const config: ICompilerConfig = {
     ...COMPILER_DEFAULTS,
     ...opts,
-    typescript: {
-      ...COMPILER_DEFAULTS.typescript,
-      ...(opts && opts.typescript),
-    }
   }
 
   if (!config.env) {
