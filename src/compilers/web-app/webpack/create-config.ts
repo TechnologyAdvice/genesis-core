@@ -6,7 +6,7 @@ import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { resolveGenesisDependency } from '../../../utils/paths'
 const WebpackManifestPlugin = require('webpack-manifest-plugin')
 
-export default function createWebpackConfig (config: ICompilerConfig, opts: {
+export default function createWebpackConfig (config: ICompilerConfig, opts?: {
   splitBundles: boolean,
 }) {
   opts = {
