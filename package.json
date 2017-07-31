@@ -6,7 +6,11 @@
   "repository": "https://github.com/technologyadvice/genesis-core",
   "author": "TechnologyAdvice",
   "license": "MIT",
+  "bin": {
+    "gen": "./bin/gen.js"
+  },
   "files": [
+    "bin",
     "src",
     "dist",
     "README.md"
@@ -37,6 +41,7 @@
     "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.24.1",
     "jest": "^20.0.4",
+    "js-yaml": "^3.9.1",
     "node-sass": "^4.5.3",
     "react-addons-test-utils": "^15.5.1",
     "react-error-overlay": "^1.0.7",

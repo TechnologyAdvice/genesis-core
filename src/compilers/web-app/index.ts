@@ -33,7 +33,12 @@ class WebAppCompiler implements ICompiler {
         else resolve(stats)
       })
     })
-    return await compile()
+    const stats = await compile()
+    logger.log((stats as any).toString({
+      colors: true,
+      chunks: false,
+    }))
+    return stats
   }
 
   /**
