@@ -1,3 +1,4 @@
+import './utils/bail-on-rejected-promise'
 import { ICompiler, ICompilerConfig } from './types'
 import WebAppCompiler from './compilers/web-app'
 import * as logger from './utils/logger'
