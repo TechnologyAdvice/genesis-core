@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as webpack from 'webpack'
 import * as HtmlWebpackPlugin from 'html-webpack-plugin'
 import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
-import { resolveGenesisDependency } from '../../../utils/paths'
+import { fileExists, resolveGenesisDependency } from '../../../utils/paths'
 const WebpackManifestPlugin = require('webpack-manifest-plugin')
 
 export default function createWebpackConfig (config: ICompilerConfig, opts?: {
@@ -208,6 +208,13 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: {
 
   // HTML Template
   // ------------------------------------
+  if (!config.templatePath) {
+    const defaultTemplatePath = inProjectSrc('index.html')
+    if (fileExists(defaultTemplatePath)) {
+      config.templatePath = defaultTemplatePath
+    }
+  }
+
   const htmlWebpackPluginOpts = {
     title: 'Genesis Application',
     inject: true,
