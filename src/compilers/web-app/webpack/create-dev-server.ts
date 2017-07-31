@@ -52,9 +52,9 @@ class DevServer {
 
     if (hasErrors) {
       logger.error(stats.toString('errors-only'))
-      logger.error('Compilation failed, see errors above.')
+      logger.error('Compilation encountered errors, see above.')
     } else if (hasWarnings) {
-      logger.warn(stats.toString('errors-only'))
+      logger.warn(stats.toString())
       logger.warn('Compilation finished with warnings, see above.')
     } else {
       const buildTime = ((stats.endTime - stats.startTime) / 1000).toFixed(2)
