@@ -52,9 +52,6 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: {
       }),
       new webpack.DefinePlugin(Object.assign({
         'process.env': { NODE_ENV: JSON.stringify(config.env) },
-        __DEV__,
-        __TEST__,
-        __PROD__,
       }, config.globals)),
     ],
   }
