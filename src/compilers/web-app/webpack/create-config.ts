@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as webpack from 'webpack'
 import * as HtmlWebpackPlugin from 'html-webpack-plugin'
 import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
-import { fileExists, resolveGenesisDependency } from '../../../utils/paths'
+import { fileExists, resolveGenesisPath, resolveGenesisDependency } from '../../../utils/paths'
 const WebpackManifestPlugin = require('webpack-manifest-plugin')
 
 export default function createWebpackConfig (config: ICompilerConfig, opts?: {
@@ -62,46 +62,7 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: {
   // JavaScript
   // ------------------------------------
   webpackConfig.module.rules.push({
-    test: /\.js$/,
-    exclude: /node_modules\/(?!@technologyadvice\/genesis-core\/src)/,
-    use: [{
-      loader: resolveGenesisDependency('babel-loader'),
-      query: {
-        cacheDirectory: true,
-        plugins: [
-          resolveGenesisDependency('babel-plugin-transform-class-properties'),
-          resolveGenesisDependency('babel-plugin-syntax-dynamic-import'),
-          [
-            resolveGenesisDependency('babel-plugin-transform-runtime'),
-            {
-              helpers: true,
-              polyfill: false,
-              regenerator: true,
-            },
-          ],
-          [
-            resolveGenesisDependency('babel-plugin-transform-object-rest-spread'),
-            {
-              usBuiltIns: true,
-            },
-          ]
-        ],
-        presets: [
-          resolveGenesisDependency('babel-preset-react'),
-          [resolveGenesisDependency('babel-preset-env'), {
-            modules: false,
-            targets: {
-              uglify: true,
-              ie9: true,
-            },
-          }],
-        ]
-      },
-    }],
-  })
-
-  webpackConfig.module.rules.push({
-    test: /\.(ts|tsx)$/,
+    test: /\.(js|jsx|ts|tsx)$/,
     exclude: /node_modules/,
     use: [{
       loader: resolveGenesisDependency('awesome-typescript-loader'),
@@ -110,6 +71,12 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: {
         transpileOnly: __TEST__,
         useBabel: false,
         silent: true,
+        ...(() => {
+          if (fileExists(path.resolve(config.basePath, 'tsconfig.json'))) return
+          return {
+            configFileName: resolveGenesisPath('src/configs/tsconfig.json'),
+          }
+        })(),
       },
     }],
   })
