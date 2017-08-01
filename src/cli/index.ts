@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import createCompiler from '../index'
 const yaml = require('js-yaml')
+const argv = require('yargs').argv
 
 const inProject = (pathname: string): string =>
   path.resolve(process.cwd(), pathname)
@@ -30,7 +31,13 @@ export default async function genesis () {
   const { tasks = {} as any, ...config } = normalizeConfig(rawConfig)
   if (config.globals) config.globals = map(JSON.stringify, config.globals)
 
-  const task = process.argv[2]
+  const opts = { ...argv }
+  const task = argv._
+  delete opts._
+  delete opts['$0']
   const compiler = createCompiler(config) as any
-  await compiler[task](tasks[task])
+  await compiler[task]({
+    ...tasks[task],
+    ...opts,
+  })
 }
