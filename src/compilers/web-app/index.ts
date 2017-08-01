@@ -58,10 +58,7 @@ class WebAppCompiler implements ICompiler {
   async test (opts: Partial<{ watch: boolean }>) {
     opts = { watch: false, ...opts }
     const createJestSuite = require('../../test-runners/jest').default
-    const testRunner = createJestSuite(this.config, {
-      watch: false,
-      ...opts
-    })
+    const testRunner = createJestSuite(this.config, opts)
 
     logger.info('Starting test runner...')
     await (opts.watch ? testRunner.watch() : testRunner.start())
