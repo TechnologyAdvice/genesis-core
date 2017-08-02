@@ -14,16 +14,19 @@ const COMPILER_DEFAULTS: ICompilerConfig = {
   templatePath : null,
   externals    : {},
   globals      : {},
+  sourcemaps   : true,
   vendors      : [],
   verbose      : false,
-  sourcemaps   : true,
 }
 
-export default (opts: Partial<ICompilerConfig>): ICompiler => {
-  const config: ICompilerConfig = {
+export function createCompilerConfig (overrides: Partial<ICompilerConfig>) {
+  return {
     ...COMPILER_DEFAULTS,
-    ...opts,
+    ...overrides,
   }
+}
+export default (opts: Partial<ICompilerConfig>): ICompiler => {
+  const config = createCompilerConfig(opts)
 
   if (!config.env) {
     config.env = 'development'

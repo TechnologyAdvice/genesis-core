@@ -4,8 +4,6 @@ import createWebpackConfig from './webpack/create-config'
 import DevServer, { DevServerOpts } from './webpack/create-dev-server'
 import * as logger from '../../utils/logger'
 
-export type Mocks = { [key: string]: string }
-
 class WebAppCompiler implements ICompiler {
   private config: ICompilerConfig
 
@@ -16,12 +14,9 @@ class WebAppCompiler implements ICompiler {
   /**
    * Builds the application to disk.
    */
-  async build (opts = {}) {
+  async build () {
     const compile = () => new Promise((resolve, reject) => {
-      const compiler = webpack(createWebpackConfig(this.config, {
-        splitBundles: true,
-        ...opts,
-      }) as any)
+      const compiler = webpack(createWebpackConfig(this.config))
       compiler.run((err, stats) => {
         if (err) return reject(err)
 
@@ -56,12 +51,11 @@ class WebAppCompiler implements ICompiler {
    * rerun tests when changes are detected.
    */
   async test (opts: Partial<{ watch: boolean }>) {
-    opts = { watch: false, ...opts }
-    const createJestSuite = require('../../test-runners/jest').default
-    const testRunner = createJestSuite(this.config, opts)
+    const createJestRunner = require('../../lib/jest/create-runner').default
+    const jest = createJestRunner(this.config)
 
     logger.info('Starting test runner...')
-    await (opts.watch ? testRunner.watch() : testRunner.start())
+    await (opts.watch ? jest.watch() : jest.start())
   }
 }
 

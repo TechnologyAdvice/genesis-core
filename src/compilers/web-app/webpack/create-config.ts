@@ -6,18 +6,11 @@ import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { fileExists, resolveGenesisPath, resolveGenesisDependency } from '../../../utils/paths'
 const WebpackManifestPlugin = require('webpack-manifest-plugin')
 
-export default function createWebpackConfig (config: ICompilerConfig, opts?: {
-  splitBundles: boolean,
-}) {
-  opts = {
-    splitBundles: true,
-    ...opts,
-  }
+export default function createWebpackConfig (config: ICompilerConfig): webpack.Configuration {
   const inProject = (...paths: Array<string>) => path.resolve(config.basePath, ...paths)
   const inProjectSrc = (file: string) => inProject(config.srcDir, file)
 
   const __DEV__  = config.env === 'development'
-  const __TEST__ = config.env === 'test'
   const __PROD__ = config.env === 'production'
 
   const webpackConfig = {
@@ -27,7 +20,6 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: {
       ],
     } as any,
     target: 'web',
-    devtool: config.sourcemaps ? 'source-map' : false,
     performance: {
       hints: false,
     },
@@ -65,7 +57,7 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: {
       loader: resolveGenesisDependency('awesome-typescript-loader'),
       query: {
         useCache: true,
-        transpileOnly: __TEST__,
+        transpileOnly: config.env === 'test',
         useBabel: false,
         silent: true,
         ...(() => {
@@ -197,7 +189,7 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: {
 
   // Bundle Splitting
   // ------------------------------------
-  if (opts.splitBundles) {
+  if (config.env !== 'test') {
     const bundles = ['manifest']
 
     if (config.vendors && config.vendors.length) {
@@ -240,5 +232,5 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: {
       })
     )
   }
-  return webpackConfig
+  return webpackConfig as any
 }
