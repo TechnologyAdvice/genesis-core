@@ -18,7 +18,6 @@ class DevServer {
       protocol: 'http',
       host: 'localhost',
       port: 3000,
-      contentBase: path.resolve(config.basePath, config.srcDir),
       onCompilerFinish: this._onCompilerFinish.bind(this),
       onCompilerStart: this._onCompilerStart.bind(this),
       ...options,

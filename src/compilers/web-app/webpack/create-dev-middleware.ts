@@ -8,7 +8,6 @@ export type CreateDevMiddlewareOpts = {
   protocol: 'http' | 'https',
   host: string,
   port: number,
-  contentBase: string,
   onCompilerStart?: () => any,
   onCompilerFinish?: (stats: any) => any,
 }
