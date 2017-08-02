@@ -1,12 +1,4 @@
-export type Environment =
-  'development'
-| 'staging'
-| 'test'
-| 'production'
-
 export interface ICompilerConfig {
-  /** The environment to use when building the project */
-  env          : Environment,
   /** The full path to the project's root directory */
   basePath     : string,
   /** The file name of the project's main entry point (defaults to main.js) */

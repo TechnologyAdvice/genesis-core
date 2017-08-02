@@ -49,7 +49,9 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: Par
         fileName: 'asset-manifest.json',
       }),
       new webpack.DefinePlugin(Object.assign({
-        'process.env': { NODE_ENV: JSON.stringify(config.env) },
+        'process.env': {
+          NODE_ENV: JSON.stringify(opts.optimize ? 'production' : process.env.NODE_ENV || 'development'),
+        },
       }, config.globals)),
     ],
   }

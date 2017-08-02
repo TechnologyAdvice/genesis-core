@@ -3,7 +3,6 @@ import { ICompiler, ICompilerConfig } from './types'
 import WebAppCompiler from './compilers/web-app'
 
 const COMPILER_DEFAULTS: ICompilerConfig = {
-  env          : process.env.NODE_ENV,
   basePath     : process.cwd(),
   entry        : 'src/main',
   publicPath   : '/',
@@ -21,6 +20,5 @@ export const createCompilerConfig = (overrides: Partial<ICompilerConfig>) => ({
 
 export default (opts: Partial<ICompilerConfig>): ICompiler => {
   const config = createCompilerConfig(opts)
-  config.env = config.env || 'development'
   return new WebAppCompiler(config)
 }

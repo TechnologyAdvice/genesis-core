@@ -15,18 +15,19 @@ class WebAppCompiler implements ICompiler {
   /**
    * Builds the application to disk.
    */
-  async build (outPath: string) {
-    outPath = outPath || path.resolve(this.config.basePath, 'dist')
+  async build (opts: { outPath: string }) {
+    opts = {
+      outPath: path.resolve(this.config.basePath, 'dist'),
+      ...opts,
+    }
 
     const compile = () => new Promise((resolve, reject) => {
-      logger.info('Enforcing process.env.NODE_ENV = "production" for an optimized build.')
-      const compiler = webpack(createWebpackConfig({
-        ...this.config,
-        env: 'production',
-      }, {
+      logger.info('Enforcing process.env.NODE_ENV as "production" for an optimized build.')
+      const compiler = webpack(createWebpackConfig(this.config, {
         optimize: true,
-        outPath,
+        outPath: opts.outPath,
       }))
+      logger.info('Starting compiler...')
       compiler.run((err, stats) => {
         if (err) return reject(err)
 
@@ -35,7 +36,7 @@ class WebAppCompiler implements ICompiler {
           jsonStats.errors.forEach(logger.error)
           return reject(new Error('Compiler encountered build errors'))
         }
-        logger.success(`Successfully built application to ${outPath}.`)
+        logger.success(`Successfully built application to ${opts.outPath}.`)
         resolve(stats)
       })
     })
