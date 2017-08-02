@@ -36,7 +36,6 @@ class WebAppCompiler implements ICompiler {
           jsonStats.errors.forEach(logger.error)
           return reject(new Error('Compiler encountered build errors'))
         }
-        logger.success(`Successfully built application to ${opts.outPath}.`)
         resolve(stats)
       })
     })
@@ -44,7 +43,9 @@ class WebAppCompiler implements ICompiler {
     logger.log((stats as any).toString({
       colors: true,
       chunks: false,
+      modules: false,
     }))
+    logger.success(`Successfully built assets to ${path.relative(process.cwd(), opts.outPath)}.`)
     return stats
   }
 
