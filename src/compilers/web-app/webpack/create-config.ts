@@ -16,11 +16,13 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: Par
   }
 
   const inProject = (...paths: Array<string>) => path.resolve(config.basePath, ...paths)
-  const inProjectSrc = (file: string) => inProject(config.srcDir, file)
+  const inProjectSrc = (file: string) => inProject('src', file)
 
   const webpackConfig = {
     entry: {
-      main: [inProjectSrc(config.main)],
+      main: ([] as any).concat(config.entry).map((entry: string) => {
+        return path.isAbsolute(entry) ? entry : inProject(entry)
+      }),
     } as any,
     target: 'web',
     performance: {
@@ -34,7 +36,7 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: Par
     resolve: {
       extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
       alias: {
-        '~': inProject(config.srcDir),
+        '~': inProject('src'),
       },
     },
     module: {

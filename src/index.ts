@@ -4,9 +4,8 @@ import WebAppCompiler from './compilers/web-app'
 
 const COMPILER_DEFAULTS: ICompilerConfig = {
   env          : process.env.NODE_ENV,
-  main         : 'main',
   basePath     : process.cwd(),
-  srcDir       : 'src',
+  entry        : 'src/main',
   outDir       : 'dist',
   publicPath   : '/',
   templatePath : null,
