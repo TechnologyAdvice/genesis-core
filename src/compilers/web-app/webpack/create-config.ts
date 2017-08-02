@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as webpack from 'webpack'
 import * as HtmlWebpackPlugin from 'html-webpack-plugin'
 import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
-import { fileExists, resolveGenesisPath, resolveGenesisDependency } from '../../../utils/paths'
+import { fileExists, resolveGenesisDependency } from '../../../utils/paths'
 const WebpackManifestPlugin = require('webpack-manifest-plugin')
 
 export type WebpackConfigOpts = {
@@ -63,12 +63,6 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: Par
         transpileOnly: false,
         useBabel: false,
         silent: true,
-        ...(() => {
-          if (fileExists(path.resolve(config.basePath, 'tsconfig.json'))) return
-          return {
-            configFileName: resolveGenesisPath('src/configs/tsconfig.json'),
-          }
-        })(),
       },
     }],
   })
