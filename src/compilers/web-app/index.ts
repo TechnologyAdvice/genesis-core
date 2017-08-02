@@ -1,3 +1,4 @@
+import * as path from 'path'
 import * as webpack from 'webpack'
 import { ICompiler, ICompilerConfig } from '../../types'
 import createWebpackConfig from './webpack/create-config'
@@ -14,7 +15,9 @@ class WebAppCompiler implements ICompiler {
   /**
    * Builds the application to disk.
    */
-  async build () {
+  async build (outPath: string) {
+    outPath = outPath || path.resolve(this.config.basePath, 'dist')
+
     const compile = () => new Promise((resolve, reject) => {
       logger.info('Enforcing process.env.NODE_ENV = "production" for an optimized build.')
       const compiler = webpack(createWebpackConfig({
@@ -22,6 +25,7 @@ class WebAppCompiler implements ICompiler {
         env: 'production',
       }, {
         optimize: true,
+        outPath,
       }))
       compiler.run((err, stats) => {
         if (err) return reject(err)
@@ -31,7 +35,8 @@ class WebAppCompiler implements ICompiler {
           jsonStats.errors.forEach(logger.error)
           return reject(new Error('Compiler encountered build errors'))
         }
-        else resolve(stats)
+        logger.success(`Successfully built application to ${outPath}.`)
+        resolve(stats)
       })
     })
     const stats = await compile()

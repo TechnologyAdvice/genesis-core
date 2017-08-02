@@ -6,7 +6,6 @@ const COMPILER_DEFAULTS: ICompilerConfig = {
   env          : process.env.NODE_ENV,
   basePath     : process.cwd(),
   entry        : 'src/main',
-  outDir       : 'dist',
   publicPath   : '/',
   templatePath : null,
   globals      : {},

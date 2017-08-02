@@ -9,8 +9,6 @@ export interface ICompilerConfig {
   env          : Environment,
   /** The full path to the project's root directory */
   basePath     : string,
-  /** The name of the directory in which to emit compiled code */
-  outDir       : string
   /** The file name of the project's main entry point (defaults to main.js) */
   entry        : string | Array<string>,
   /** The full path to the HTML file to use as the project template */

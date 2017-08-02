@@ -8,15 +8,17 @@ const WebpackManifestPlugin = require('webpack-manifest-plugin')
 
 export type WebpackConfigOpts = {
   optimize: boolean,
+  outPath: string,
 }
 export default function createWebpackConfig (config: ICompilerConfig, opts?: Partial<WebpackConfigOpts>): webpack.Configuration {
-  opts = {
-    optimize: false,
-    ...opts,
-  }
-
   const inProject = (...paths: Array<string>) => path.resolve(config.basePath, ...paths)
   const inProjectSrc = (file: string) => inProject('src', file)
+
+  opts = {
+    optimize: false,
+    outPath: inProject('dist'),
+    ...opts,
+  }
 
   const webpackConfig = {
     entry: {
@@ -29,7 +31,7 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: Par
       hints: false,
     },
     output: {
-      path: inProject(config.outDir),
+      path: opts.outPath,
       filename: opts.optimize ? '[name].[chunkhash].js' : '[name].js',
       publicPath: config.publicPath,
     },
