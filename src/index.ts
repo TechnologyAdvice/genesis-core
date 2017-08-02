@@ -5,7 +5,6 @@ import * as logger from './utils/logger'
 
 const COMPILER_DEFAULTS: ICompilerConfig = {
   env          : process.env.NODE_ENV,
-  projectType  : 'web-app',
   main         : 'main',
   basePath     : process.cwd(),
   srcDir       : 'src',
@@ -35,12 +34,5 @@ export default (opts: Partial<ICompilerConfig>): ICompiler => {
       'Set process.env.NODE_ENV or the "env" property in your genesis configuration.'
     )
   }
-  switch (config.projectType) {
-    case 'web-app':
-      return new WebAppCompiler(config)
-    case 'library':
-      throw new Error('Library project type not yet implemented.')
-    default:
-      throw new Error('Unrecognized project type.')
-  }
+  return new WebAppCompiler(config)
 }
