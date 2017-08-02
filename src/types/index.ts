@@ -19,10 +19,6 @@ export interface ICompilerConfig {
   templatePath : string | null,
   /** The base path for all projects assets (relative to the root) */
   publicPath   : string,
-  /** A hash map of keys that the compiler should treat as external to the project */
-  externals    : {
-    [key: string] : string,
-  },
   /** A hash map of identifiers and their values to expose as global variables */
   globals      : Object,
   // TODO(zuko): figure out a better name

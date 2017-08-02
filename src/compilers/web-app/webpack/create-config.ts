@@ -37,7 +37,6 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: Par
         '~': inProject(config.srcDir),
       },
     },
-    externals: config.externals,
     module: {
       rules: [] as Array<any>,
     },
