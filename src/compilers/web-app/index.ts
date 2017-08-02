@@ -16,7 +16,13 @@ class WebAppCompiler implements ICompiler {
    */
   async build () {
     const compile = () => new Promise((resolve, reject) => {
-      const compiler = webpack(createWebpackConfig(this.config))
+      logger.info('Enforcing process.env.NODE_ENV = "production" for an optimized build.')
+      const compiler = webpack(createWebpackConfig({
+        ...this.config,
+        env: 'production',
+      }, {
+        optimize: true,
+      }))
       compiler.run((err, stats) => {
         if (err) return reject(err)
 

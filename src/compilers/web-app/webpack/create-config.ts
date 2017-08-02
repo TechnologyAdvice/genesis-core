@@ -6,18 +6,21 @@ import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { fileExists, resolveGenesisPath, resolveGenesisDependency } from '../../../utils/paths'
 const WebpackManifestPlugin = require('webpack-manifest-plugin')
 
-export default function createWebpackConfig (config: ICompilerConfig): webpack.Configuration {
+export type WebpackConfigOpts = {
+  optimize: boolean,
+}
+export default function createWebpackConfig (config: ICompilerConfig, opts?: Partial<WebpackConfigOpts>): webpack.Configuration {
+  opts = {
+    optimize: false,
+    ...opts,
+  }
+
   const inProject = (...paths: Array<string>) => path.resolve(config.basePath, ...paths)
   const inProjectSrc = (file: string) => inProject(config.srcDir, file)
 
-  const __DEV__  = config.env === 'development'
-  const __PROD__ = config.env === 'production'
-
   const webpackConfig = {
     entry: {
-      main: [
-        inProjectSrc(config.main),
-      ],
+      main: [inProjectSrc(config.main)],
     } as any,
     target: 'web',
     performance: {
@@ -25,7 +28,7 @@ export default function createWebpackConfig (config: ICompilerConfig): webpack.C
     },
     output: {
       path: inProject(config.outDir),
-      filename: __DEV__ ? '[name].js' : '[name].[chunkhash].js',
+      filename: opts.optimize ? '[name].[chunkhash].js' : '[name].js',
       publicPath: config.publicPath,
     },
     resolve: {
@@ -57,7 +60,7 @@ export default function createWebpackConfig (config: ICompilerConfig): webpack.C
       loader: resolveGenesisDependency('awesome-typescript-loader'),
       query: {
         useCache: true,
-        transpileOnly: config.env === 'test',
+        transpileOnly: false,
         useBabel: false,
         silent: true,
         ...(() => {
@@ -97,7 +100,7 @@ export default function createWebpackConfig (config: ICompilerConfig): webpack.C
   const extractStyles = new ExtractTextPlugin({
     filename: 'styles/[name].[contenthash].css',
     allChunks: true,
-    disable: __DEV__,
+    disable: !opts.optimize,
   })
 
   webpackConfig.module.rules.push({
@@ -189,19 +192,17 @@ export default function createWebpackConfig (config: ICompilerConfig): webpack.C
 
   // Bundle Splitting
   // ------------------------------------
-  if (config.env !== 'test') {
-    const bundles = ['manifest']
+  const bundles = ['manifest']
 
-    if (config.vendors && config.vendors.length) {
-      bundles.unshift('vendor')
-      webpackConfig.entry.vendor = config.vendors
-    }
-    webpackConfig.plugins.push(new webpack.optimize.CommonsChunkPlugin({ names: bundles }))
+  if (config.vendors && config.vendors.length) {
+    bundles.unshift('vendor')
+    webpackConfig.entry.vendor = config.vendors
   }
+  webpackConfig.plugins.push(new webpack.optimize.CommonsChunkPlugin({ names: bundles }))
 
-  // Production Optimizations
+  // Build Optimizations
   // ------------------------------------
-  if (__PROD__) {
+  if (opts.optimize) {
     const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
     webpackConfig.plugins.push(
