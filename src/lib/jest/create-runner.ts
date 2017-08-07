@@ -1,5 +1,5 @@
 const jest = require('jest')
-import { resolveGenesisDependency } from '../../utils/paths'
+import { resolveGenesisDependency, resolveGenesisPath } from '../../utils/paths'
 import { ICompilerConfig } from '../../types'
 
 export default function createJestTestRunner (config: ICompilerConfig) {
@@ -22,6 +22,8 @@ export default function createJestTestRunner (config: ICompilerConfig) {
     moduleFileExtensions: ['js', 'jsx', 'json', 'ts', 'tsx'],
     moduleNameMapper: {
       '~(.*)$': '<rootDir>/src/$1',
+      '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': resolveGenesisPath('src/lib/jest/mocks/file-mock.js'),
+      '\\.(sass|scss|css)$': resolveGenesisPath('src/lib/jest/mocks/style-mock.js')
     },
   }
   return {
