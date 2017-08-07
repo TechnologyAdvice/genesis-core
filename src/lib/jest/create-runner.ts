@@ -12,6 +12,7 @@ export default function createJestTestRunner (config: ICompilerConfig) {
       '<rootDir>/test/**/*.(spec|test).(js|jsx|ts|tsx)',
       '<rootDir>/tests/**/*.(spec|test).(js|jsx|ts|tsx)',
     ],
+    globals: config.globals,
     testEnvironment: 'node',
     testURL: 'http://localhost',
     transform: {
