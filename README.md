@@ -33,22 +33,8 @@ This compiler is still in progress.
 
 ```js
 {
-  /** The environment to use when compiling the project */
-  env          : Environment,
-  /** The full path to the project's root directory */
-  basePath     : string,
-  /** The name of the project's source code directory */
-  srcDir       : string,
-  /** The name of the directory in which to emit compiled code */
-  outDir       : string
-  /** The file name of the project's main entry point. Defaults to main.{js,ts} */
-  main         : string,
-  /** The full path to the HTML template to use with the project */
-  templatePath : string | null,
-  /** The base path for all projects assets (relative to the document root) */
-  publicPath   : string,
-  /** A hash map of modules to replace with external global references */
-  externals    : { [key: string]: string },
+  /** The full path to the project's source directory */
+  srcPath      : string,
   /** A hash map of variables and their values to expose globally */
   globals      : { [key: string]: any },
   /** The list of modules to compile separately from the core project code */
@@ -56,11 +42,6 @@ This compiler is still in progress.
   /** Whether to run the compiler with verbose logging */
   verbose      : boolean,
   /** Whether to generate sourcemaps */
-  sourcemaps   : boolean,
-  /** TypeScript-specific configuration */
-  typescript   : {
-    /** The full path to the tsconfig.json file to use */
-    configPath : string | null,
-  }
+  sourcemaps   : boolean
 }
 ```

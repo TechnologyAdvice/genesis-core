@@ -1,10 +1,9 @@
 const jest = require('jest')
-import { resolveGenesisDependency, resolveGenesisPath } from '../../utils/paths'
-import { ICompilerConfig } from '../../types'
+const { resolveGenesisDependency, resolveGenesisFile } = require('../utils/fs')
 
-export default function createJestTestRunner (config: ICompilerConfig) {
+const createJestTestRunner = (config) => {
   const jestConfig = {
-    rootDir: config.basePath,
+    rootDir: process.cwd(),
     collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
     setupFiles: [],
     testMatch: [
@@ -21,9 +20,9 @@ export default function createJestTestRunner (config: ICompilerConfig) {
     transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$'],
     moduleFileExtensions: ['js', 'jsx', 'json', 'ts', 'tsx'],
     moduleNameMapper: {
+      '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': resolveGenesisFile('src/jest/mocks/file-mock.js'),
+      '\\.(sass|scss|css)$': resolveGenesisFile('src/jest/mocks/style-mock.js'),
       '~(.*)$': '<rootDir>/src/$1',
-      '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': resolveGenesisPath('src/lib/jest/mocks/file-mock.js'),
-      '\\.(sass|scss|css)$': resolveGenesisPath('src/lib/jest/mocks/style-mock.js')
     },
   }
   return {
@@ -31,3 +30,5 @@ export default function createJestTestRunner (config: ICompilerConfig) {
     watch: () => jest.run(['--config', JSON.stringify(jestConfig), '--watch']),
   }
 }
+
+module.exports = createJestTestRunner

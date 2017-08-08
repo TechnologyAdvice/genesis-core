@@ -1,48 +1,60 @@
-import { ICompilerConfig } from '../../../types'
-import * as path from 'path'
-import * as webpack from 'webpack'
-import * as HtmlWebpackPlugin from 'html-webpack-plugin'
-import * as ExtractTextPlugin from 'extract-text-webpack-plugin'
-import { fileExists, resolveGenesisDependency } from '../../../utils/paths'
+const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const WebpackManifestPlugin = require('webpack-manifest-plugin')
+const { fileExists, resolveGenesisDependency } = require('../utils/fs')
 
-export type WebpackConfigOpts = {
-  optimize: boolean,
-  outPath: string,
-}
-export default function createWebpackConfig (config: ICompilerConfig, opts?: Partial<WebpackConfigOpts>): webpack.Configuration {
-  const inProject = (...paths: Array<string>) => path.resolve(config.basePath, ...paths)
-  const inProjectSrc = (file: string) => inProject('src', file)
+/**
+ * Ensure globals are correctly stringified before being injected by webpack.
 
-  opts = {
-    optimize: false,
-    outPath: inProject('dist'),
-    ...opts,
+ * Given:
+ * globals: { APP_ENV: 'development' }
+ *
+ * APP_ENV would become development, !!without quotes!!, which is unparseable.
+ * What we really want is the string literal "development" to be injected, so
+ * we have to ensure global strings are stringified accordingly.
+ *
+ * Requiring them to be correctly escaped when configured is a leaky abstraction
+ * that is painful for the majority use case.
+ */
+const webpackifyGlobal = when(isType('string'), (value) => {
+  try {
+    JSON.parse(value)
+    return value
+  } catch (e) {
+    return JSON.stringify(value)
   }
+})
+
+const createWebpackConfig = (config, opts) => {
+  const inProjectSrc = (target) => path.resolve(config.srcPath, target)
+
+  opts = Object.assign({ optimize: false }, opts)
 
   const webpackConfig = {
     entry: {
-      main: ([] as any).concat(config.entry).map((entry: string) => {
-        return path.isAbsolute(entry) ? entry : inProject(entry)
-      }),
-    } as any,
+      main: map((entry) => {
+        return path.isAbsolute(entry) ? entry : inProjectSrc(entry)
+      }, ['main']),
+    },
     target: 'web',
     performance: {
       hints: false,
     },
     output: {
-      path: opts.outPath,
+      path: opts.out,
       filename: opts.optimize ? '[name].[chunkhash].js' : '[name].js',
-      publicPath: config.publicPath,
+      publicPath: '/',
     },
     resolve: {
       extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
       alias: {
-        '~': inProject('src'),
+        '~': config.srcPath,
       },
     },
     module: {
-      rules: [] as Array<any>,
+      rules: [],
     },
     plugins: [
       new WebpackManifestPlugin({
@@ -52,7 +64,7 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: Par
         'process.env': {
           NODE_ENV: JSON.stringify(opts.optimize ? 'production' : process.env.NODE_ENV || 'development'),
         },
-      }, config.globals)),
+      }, map(webpackifyGlobal, config.globals))),
     ],
   }
 
@@ -166,17 +178,15 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: Par
 
   // HTML Template
   // ------------------------------------
-  if (!config.templatePath) {
-    const defaultTemplatePath = inProjectSrc('index.html')
-    if (fileExists(defaultTemplatePath)) {
-      config.templatePath = defaultTemplatePath
-    }
+  const templatePath = inProjectSrc('index.html')
+  if (fileExists(templatePath)) {
+    config.templatePath = templatePath
   }
 
   const htmlWebpackPluginOpts = {
     title: 'Genesis Application',
     inject: true,
-    chunksSortMode: 'dependency' as any,
+    chunksSortMode: 'dependency',
     template: config.templatePath || undefined,
     minify: {
       collapseWhitespace: true,
@@ -232,5 +242,7 @@ export default function createWebpackConfig (config: ICompilerConfig, opts?: Par
       })
     )
   }
-  return webpackConfig as any
+  return webpackConfig
 }
+
+module.exports = createWebpackConfig
