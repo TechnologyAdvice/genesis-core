@@ -36,8 +36,6 @@
     "react-test-renderer": "^15.6.1",
     "redash": "^0.21.1",
     "sass-loader": "^6.0.5",
-    "sinon": "^2.3.2",
-    "sinon-chai": "^2.10.0",
     "style-loader": "^0.18.2",
     "ts-jest": "^20.0.7",
     "typescript": "^2.4.2",
@@ -47,7 +45,6 @@
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.2",
     "webpack-manifest-plugin": "^1.1.0",
-    "webpack-node-externals": "^1.6.0",
     "yargs": "^8.0.2"
   },
   "devDependencies": {
