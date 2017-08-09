@@ -12,7 +12,7 @@ const createWebpackDevMiddleware = (webpackConfig, opts) => {
   webpackConfig.output.publicPath = `${opts.protocol}://${opts.host}:${opts.port}/`
   webpackConfig.entry.main.unshift(
     resolveGenesisDependency('webpack-hot-middleware/client.js') +
-    `?path=${webpackConfig.output.publicPath}__webpack_hmr`,
+    `?path=${webpackConfig.output.publicPath}__webpack_hmr`
   )
   webpackConfig.plugins.push(
     new webpack.HotModuleReplacementPlugin(),
