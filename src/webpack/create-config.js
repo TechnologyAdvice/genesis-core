@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const WebpackManifestPlugin = require('webpack-manifest-plugin')
+const createBabelConfig = require('../babel/create-config')
 const { fileExists, resolveGenesisDependency } = require('../utils/fs')
 
 /**
@@ -70,18 +71,36 @@ const createWebpackConfig = (config, opts) => {
 
   // JavaScript
   // ------------------------------------
+  const TS_LOADER = {
+    loader: resolveGenesisDependency('awesome-typescript-loader'),
+    query: {
+      useCache: true,
+      transpileOnly: false,
+      useBabel: false,
+      silent: true,
+    },
+  }
+  const BABEL_LOADER = {
+    loader: resolveGenesisDependency('babel-loader'),
+    query: Object.assign(createBabelConfig(), {
+      cacheDirectory: true,
+    }),
+  }
+
+  if (config.transpile) {
+    webpackConfig.module.rules.push({
+      test: /\.(js|jsx)$/,
+      exclude: /node_modules/,
+      use: [config.transpile === 'typescript' ? TS_LOADER : BABEL_LOADER],
+    })
+  }
+
+  // TypeScript
+  // ------------------------------------
   webpackConfig.module.rules.push({
-    test: /\.(js|jsx|ts|tsx)$/,
+    test: /\.(ts|tsx)$/,
     exclude: /node_modules/,
-    use: [{
-      loader: resolveGenesisDependency('awesome-typescript-loader'),
-      query: {
-        useCache: true,
-        transpileOnly: false,
-        useBabel: false,
-        silent: true,
-      },
-    }],
+    use: [TS_LOADER],
   })
 
   // Styles

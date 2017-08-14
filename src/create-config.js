@@ -8,6 +8,7 @@ const DEFAULT_CONFIG = {
   globals      : {},
   sourcemaps   : true,
   verbose      : false,
+  transpile    : true,
 }
 
 const normalizeConfig = (config) => {
