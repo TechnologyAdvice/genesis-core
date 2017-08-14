@@ -27,16 +27,16 @@ const webpackifyGlobal = when(isType('string'), (value) => {
   }
 })
 
-const createWebpackConfig = (config, opts) => {
-  const inProjectSrc = (target) => path.resolve(config.srcPath, target)
+const inProject = (target) => path.resolve(process.cwd(), target)
 
+const createWebpackConfig = (config, opts) => {
   opts = Object.assign({ optimize: false }, opts)
 
   const webpackConfig = {
     entry: {
       main: map((entry) => {
-        return path.isAbsolute(entry) ? entry : inProjectSrc(entry)
-      }, ['main']),
+        return path.isAbsolute(entry) ? entry : inProject(entry)
+      }, config.entry),
     },
     target: 'web',
     performance: {
@@ -49,9 +49,9 @@ const createWebpackConfig = (config, opts) => {
     },
     resolve: {
       extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
-      alias: {
-        '~': config.srcPath,
-      },
+      alias: Object.assign({
+        '~': path.resolve(process.cwd(), 'src'),
+      }, config.alias),
     },
     module: {
       rules: [],
@@ -135,7 +135,7 @@ const createWebpackConfig = (config, opts) => {
           options: {
             sourceMap: config.sourcemaps,
             includePaths: [
-              inProjectSrc('styles'),
+              inProject('src/styles'),
             ],
           },
         }
@@ -178,11 +178,6 @@ const createWebpackConfig = (config, opts) => {
 
   // HTML Template
   // ------------------------------------
-  const templatePath = inProjectSrc('index.html')
-  if (fileExists(templatePath)) {
-    config.templatePath = templatePath
-  }
-
   const htmlWebpackPluginOpts = {
     title: 'Genesis Application',
     inject: true,
