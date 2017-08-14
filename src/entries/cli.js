@@ -3,6 +3,8 @@ require('redash/installer')(global)
 const fs = require('fs')
 const path = require('path')
 const yaml = require('js-yaml')
+const log = require('../utils/log')
+const { fileExists } = require('../utils/fs')
 const createCompiler = require('../create-compiler')
 
 const mapDeep = curry((xform, functor) => map(cond([
@@ -24,6 +26,10 @@ const interpolateEnvVar = curry((env, str) =>
 /** Loads the local genesis configuration from disk. */
 const loadConfig = () => {
   const configPath = path.resolve(process.cwd(), 'genesis.yml')
+  if (!fileExists(configPath)) {
+    log.info('No `genesis.yml` file detected. The default configuration will be used.')
+    return {}
+  }
   return yaml.safeLoad(fs.readFileSync(configPath, 'utf8'))
 }
 
