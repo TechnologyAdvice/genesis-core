@@ -15,6 +15,7 @@ const createJestTestRunner = (config) => {
     testEnvironment: 'node',
     testURL: 'http://localhost',
     transform: {
+      '^.+\\.(js|jsx)$': resolveGenesisFile('src/jest/transforms/babel.js'),
       '^.+\\.tsx?$': resolveGenesisDependency('ts-jest/preprocessor.js'),
     },
     transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$'],
