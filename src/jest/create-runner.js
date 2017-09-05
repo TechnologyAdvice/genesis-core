@@ -26,9 +26,12 @@ const createJestTestRunner = (config) => {
       '~(.*)$': '<rootDir>/src/$1',
     },
   }
+  const run = (argv) => {
+    return jest.run(unique([].concat(argv).concat(process.argv.slice(3))))
+  }
   return {
-    start: () => jest.run(['--config', JSON.stringify(jestConfig)]),
-    watch: () => jest.run(['--config', JSON.stringify(jestConfig), '--watch']),
+    start: () => run(['--config', JSON.stringify(jestConfig)]),
+    watch: () => run(['--config', JSON.stringify(jestConfig), '--watch']),
   }
 }
 
