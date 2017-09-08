@@ -8,13 +8,18 @@ Take advantage of the modern JavaScript ecosystem without any of the headache. G
 ## Table of Contents
 1. [Features](#features)
 1. [Installation](#installation)
-1. [Targets](#usage)
-1. [Configuration](#configuration)
+1. [Usage](#usage)
 
 ## Installation
 
+It's recommended to install Genesis Core as a project-level dependency, and not a global depdendency. This will give you the freedom to run multiple projects independently and will provide more fine-grained control over upgrades.
+
 ```bash
-$ npm install --save-dev @technologyadvice/genesis-core
+# Yarn (recommended)
+yarn add --dev @technologyadvice/genesis-core
+
+# NPM
+npm install --save-dev @technologyadvice/genesis-core
 ```
 
 ## Targets
@@ -29,19 +34,59 @@ This compiler is still in progress.
 
 This compiler is still in progress.
 
-## Configuration
+## Usage
+
+Genesis is configured with the same options no matter which API is used.
+
+### Configuration
 
 ```js
 {
-  /** The full path to the project's source directory */
-  srcPath      : string,
-  /** A hash map of variables and their values to expose globally */
-  globals      : { [key: string]: any },
-  /** The list of modules to compile separately from the core project code */
-  vendors      : Array<string>,
-  /** Whether to run the compiler with verbose logging */
-  verbose      : boolean,
-  /** Whether to generate sourcemaps */
-  sourcemaps   : boolean
+  entry        : string | Array<string>,      // path(s) to your application entry point(s)
+  templatePath : string,                      // path to your main index.html file
+  vendors      : Array<string>,               // package names to bundle separately
+  alias        : { [key: string]: string },   // module resolution aliases
+  globals      : { [key: string]: any },      // variables to expose globally
+  sourcemaps   : boolean,                     // generate sourcemaps?
+  verbose      : boolean,                     // enable more verbose output?
+  transpile    : boolean | 'typescript',      // transpile? `true` defaults to babel
 }
+```
+
+### Command Line Interface
+
+After [installing](#installation) Genesis Core in your project, you can use the `gen` binary to run tasks. To do this, configure your `package.json` scripts to run `gen` commands.
+
+```json
+{
+  "scripts": {
+    "start": "gen start",
+    "build": "gen build",
+    "test": "gen test"
+  }
+}
+```
+
+Once this is done, you can run these just like any other npm command. Note that you can also pass options to the genesis task:
+
+```sh
+npm start -- --port 3000
+```
+
+### Node API
+
+```js
+const genesis = require('@technologyadvice/genesis-core')
+
+const compiler = genesis({
+  // your genesis configuration
+})
+
+// Each task returns a promise:
+compiler.build()
+  .then(() => { /* app has been built! */ })
+
+// You can pass task-specific option:
+compiler.start({ host: 'localhost', port: 3000 })
+compiler.test({ watch: true })
 ```
