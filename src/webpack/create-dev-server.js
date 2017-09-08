@@ -58,7 +58,7 @@ const createDevServer = (config, opts) => {
   opts = Object.assign({}, {
     protocol: 'http',
     host: 'localhost',
-    port: 3000,
+    port: opts.port || 3000,
     onChange: (file) => {
       printInteractiveMode()
       log.info(`Detected file change: ${chalk.bold(file)}`)
