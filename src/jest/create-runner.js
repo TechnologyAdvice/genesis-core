@@ -5,7 +5,7 @@ const createJestTestRunner = (config) => {
   const jestConfig = {
     rootDir: process.cwd(),
     collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
-    setupFiles: [],
+    setupFiles: reject(isNil, [].concat(config.setupFiles)),
     testMatch: [
       '<rootDir>/src/**/__tests__/**/*.(spec|test).(js|jsx|ts|tsx)',
       '<rootDir>/test/**/*.(spec|test).(js|jsx|ts|tsx)',
