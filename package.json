@@ -42,8 +42,6 @@
     "jest": "^21.0.1",
     "js-yaml": "^3.9.1",
     "node-sass": "^4.5.3",
-    "react-addons-test-utils": "^15.5.1",
-    "react-test-renderer": "^15.6.1",
     "redash": "^0.23.0",
     "sass-loader": "^6.0.5",
     "style-loader": "^0.18.2",
