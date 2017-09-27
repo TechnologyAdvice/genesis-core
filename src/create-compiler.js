@@ -24,6 +24,7 @@ const createCompiler = (overrides) => {
 
     test (opts = {}) {
       const jest = require('./jest/create-runner')(config)
+      if (opts.watch) require('./utils/bail-on-rejected-promise').disable()
       return opts.watch ? jest.watch() : jest.start()
     }
   }
