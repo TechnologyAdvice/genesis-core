@@ -40,6 +40,9 @@ const createWebpackConfig = (config, opts) => {
       }, config.entry),
     },
     target: 'web',
+    devtool: config.sourcemaps
+      ? opts.optimize ? 'source-map' : 'cheap-module-eval-source-map'
+      : false,
     performance: {
       hints: false,
     },
