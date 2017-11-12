@@ -3,6 +3,7 @@ const { resolveGenesisDependency } = require('../utils/fs')
 const createBabelConfig = () => ({
   plugins: [
     resolveGenesisDependency('babel-plugin-transform-class-properties'),
+    resolveGenesisDependency('babel-plugin-transform-decorators'),
     resolveGenesisDependency('babel-plugin-syntax-dynamic-import'),
     [
       resolveGenesisDependency('babel-plugin-transform-runtime'),
