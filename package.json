@@ -1,6 +1,6 @@
 {
   "name": "@technologyadvice/genesis-core",
-  "version": "0.15.4",
+  "version": "0.15.5",
   "description": "Simplified build tooling for a complected world",
   "main": "src/entries/node.js",
   "repository": "https://github.com/technologyadvice/genesis-core",
